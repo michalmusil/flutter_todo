@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/model/repositories/itasks_repository.dart';
 import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
 
@@ -19,12 +20,39 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
   late final TaskModel? _existingTask;
   late final bool _isUpdating;
 
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _description = TextEditingController();
+  bool _done = false;
+  DateTime _created = DateTime.now();
+  DateTime? _due;
+
+  String? _nameError;
+
   @override
   void initState() {
     _tasksRepository = TasksRepositoryImpl();
     _existingTask = widget.task;
     _isUpdating = _existingTask != null;
+
+    initExistingTask();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _name.dispose();
+    _description.dispose();
+    super.dispose();
+  }
+
+  initExistingTask() {
+    if (_existingTask != null) {
+      _name.text = _existingTask!.name;
+      _description.text = _existingTask!.description ?? '';
+      _done = _existingTask!.done;
+      _created = _existingTask!.created;
+      _due = _existingTask!.due;
+    }
   }
 
   @override
@@ -64,7 +92,21 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
           ),
           child: Column(
             children: [
-
+              CustomTextInput(
+                controller: _name,
+                hint: 'Name',
+                label: 'Name',
+                allowClearButton: false,
+                errorText: _nameError,
+              ),
+              CustomTextInput(
+                controller: _description,
+                hint: 'Description',
+                label: 'Description',
+                allowClearButton: false,
+                keyboardType: TextInputType.multiline,
+                maxLines: 5,
+              ),
             ],
           ),
         ),

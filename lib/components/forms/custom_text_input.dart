@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class CustomInput extends StatefulWidget {
+class CustomTextInput extends StatefulWidget {
   final TextEditingController controller;
+  String? label;
   String? hint;
   String? errorText;
   void Function() onTap;
+  final bool allowClearButton;
   final TextInputType keyboardType;
+  final int maxLines;
   final bool obscureText;
   final bool enableSuggestions;
   final TextCapitalization textCapitalization;
 
-  CustomInput({
+  CustomTextInput({
     super.key,
     required this.controller,
+    this.label,
     this.hint,
     this.errorText,
+    this.allowClearButton = false,
     this.keyboardType = TextInputType.text,
+    this.maxLines = 1,
     this.obscureText = false,
     this.enableSuggestions = false,
     this.textCapitalization = TextCapitalization.none,
@@ -26,26 +32,47 @@ class CustomInput extends StatefulWidget {
   static void _defaultOnTap() {}
 
   @override
-  State<CustomInput> createState() => _CustomInputState();
+  State<CustomTextInput> createState() => _CustomTextInputState();
 }
 
-class _CustomInputState extends State<CustomInput> {
+class _CustomTextInputState extends State<CustomTextInput> {
+  late final FocusNode _focusNode;
   bool _showClearButton = false;
+  bool _showLabel = false;
 
   @override
   void initState() {
+    _focusNode = FocusNode();
     checkForClearButton();
+    checkForLabel();
     widget.controller.addListener(() {
       checkForClearButton();
+      checkForLabel();
     });
+
     super.initState();
   }
 
-  void checkForClearButton(){
-    final show = widget.controller.text.isNotEmpty;
-    if(_showClearButton != show){
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  checkForClearButton() {
+    final show = widget.allowClearButton && widget.controller.text.isNotEmpty;
+    if (_showClearButton != show) {
       setState(() {
         _showClearButton = show;
+      });
+    }
+  }
+
+  checkForLabel() {
+    final show = widget.label != null && widget.controller.text.isNotEmpty;
+    if (_showLabel != show) {
+      setState(() {
+        _showLabel = show;
       });
     }
   }
@@ -73,17 +100,30 @@ class _CustomInputState extends State<CustomInput> {
                     color: Theme.of(context).colorScheme.error,
                   )),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8,
+            vertical: 2,
+          ),
           child: TextField(
             controller: widget.controller,
+            focusNode: _focusNode,
             autocorrect: false,
             keyboardType: widget.keyboardType,
+            maxLines: widget.maxLines,
             obscureText: widget.obscureText,
             enableSuggestions: widget.enableSuggestions,
             textCapitalization: widget.textCapitalization,
             decoration: InputDecoration(
               hintText: widget.hint,
               errorText: widget.errorText,
+              label: _showLabel
+                  ? Text(
+                      widget.label!,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    )
+                  : null,
               border: InputBorder.none,
               suffixIcon: !_showClearButton
                   ? null
@@ -96,6 +136,9 @@ class _CustomInputState extends State<CustomInput> {
                     ),
             ),
             onTap: widget.onTap,
+            onTapOutside: (event) {
+              _focusNode.unfocus();
+            },
           ),
         ),
       ),

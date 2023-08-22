@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/services/auth/auth_service_impl.dart';
 import 'package:todo_list/services/auth/iauth_service.dart';
 
+import '../components/forms/custom_text_input.dart';
 import '../navigation/nav_router.dart';
 import '../services/auth/auth_exception.dart';
 
@@ -82,31 +83,25 @@ class _RegistrationState extends State<Registration> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TextField(
+            CustomTextInput(
               controller: _email,
-              autocorrect: false,
               keyboardType: TextInputType.emailAddress,
-              textCapitalization: TextCapitalization.none,
-              decoration: const InputDecoration(hintText: 'E-mail'),
+              hint: 'E-mail',
+              label: 'E-mail',
               onTap: () {
                 setState(() {
                   _errorText = null;
                 });
               },
             ),
-            TextField(
+            CustomTextInput(
               controller: _password,
-              keyboardType: TextInputType.text,
-              autocorrect: false,
               obscureText: true,
-              enableSuggestions: false,
-              textCapitalization: TextCapitalization.none,
-              decoration:
-                  InputDecoration(hintText: 'Password', errorText: _errorText),
+              hint: 'Password',
+              label: 'Password',
+              errorText: _errorText,
               onTap: () {
-                setState(() {
-                  _errorText = null;
-                });
+                _errorText = null;
               },
             ),
             TextButton(

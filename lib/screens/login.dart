@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:todo_list/components/forms/custom_input.dart';
+import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/services/auth/auth_exception.dart';
 import 'package:todo_list/services/auth/auth_service_impl.dart';
@@ -78,20 +78,22 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CustomInput(
+            CustomTextInput(
               controller: _email,
               keyboardType: TextInputType.emailAddress,
               hint: 'E-mail',
+              label: 'E-mail',
               onTap: () {
                 setState(() {
                   _errorText = null;
                 });
               },
             ),
-            CustomInput(
+            CustomTextInput(
               controller: _password,
               obscureText: true,
               hint: 'Password',
+              label: 'Password',
               errorText: _errorText,
               onTap: () {
                 _errorText = null;
