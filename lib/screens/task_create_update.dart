@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/model/repositories/itasks_repository.dart';
+import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
 
 import '../model/tasks/task_model.dart';
 import '../navigation/nav_router.dart';
@@ -9,17 +11,18 @@ class TaskCreateUpdate extends StatefulWidget {
   final TaskModel? task;
 
   @override
-  State<TaskCreateUpdate> createState() => _TaskCreateUpdateState(task);
+  State<TaskCreateUpdate> createState() => _TaskCreateUpdateState();
 }
 
 class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
-  _TaskCreateUpdateState(this._existingTask);
-
-  final TaskModel? _existingTask;
+  late final ITasksRepository _tasksRepository;
+  late final TaskModel? _existingTask;
   late final bool _isUpdating;
 
   @override
   void initState() {
+    _tasksRepository = TasksRepositoryImpl();
+    _existingTask = widget.task;
     _isUpdating = _existingTask != null;
     super.initState();
   }
@@ -31,10 +34,11 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         title: Expanded(
-            child: Text(
-          (_isUpdating == true ? "Update task" : "Add task"),
-          overflow: TextOverflow.ellipsis,
-        )),
+          child: Text(
+            (_isUpdating == true ? "Update task" : "Add task"),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () {
@@ -59,7 +63,9 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
             horizontal: 26.0,
           ),
           child: Column(
-            
+            children: [
+
+            ],
           ),
         ),
       ),

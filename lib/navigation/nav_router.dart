@@ -31,16 +31,12 @@ class NavRouter {
   }
 
   Future<void> toTaskDetail(BuildContext context, {required TaskModel task}) {
-    return Navigator.of(context).pushNamed(
-      Routes.taskDetail.route,
-      arguments: task
-    );
+    return Navigator.of(context)
+        .pushNamed(Routes.taskDetail.route, arguments: task);
   }
 
   Future<void> toTaskCreateOrUpdate(BuildContext context, {TaskModel? task}) {
-    return Navigator.of(context).pushNamed(
-      Routes.taskCreateOrUpdate.route,
-      arguments: task
-    );
+    return Navigator.of(context)
+        .pushNamed(Routes.taskCreateOrUpdate.route, arguments: task);
   }
 }

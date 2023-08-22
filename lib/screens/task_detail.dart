@@ -14,17 +14,16 @@ class TaskDetail extends StatefulWidget {
   final TaskModel task;
 
   @override
-  State<TaskDetail> createState() => _TaskDetailState(task);
+  State<TaskDetail> createState() => _TaskDetailState();
 }
 
 class _TaskDetailState extends State<TaskDetail> {
-  _TaskDetailState(this._task);
-
-  late final TaskModel _task;
+  late TaskModel _task;
 
   @override
   void initState() {
     super.initState();
+    _task = widget.task;
   }
 
   @override
@@ -33,11 +32,10 @@ class _TaskDetailState extends State<TaskDetail> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: const Expanded(
-            child: Text(
+        title: const Text(
           "Task detail",
           overflow: TextOverflow.ellipsis,
-        )),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () {
@@ -108,11 +106,14 @@ class _TaskDetailState extends State<TaskDetail> {
                   ],
                   icon: Icons.timelapse_rounded,
                 ),
-              const SizedBox(height: 20,),
+              const SizedBox(
+                height: 20,
+              ),
               Center(
                 child: ElevatedButton(
                     onPressed: () {
-                      NavRouter.instance.toTaskCreateOrUpdate(context, task: _task);
+                      NavRouter.instance
+                          .toTaskCreateOrUpdate(context, task: _task);
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor:

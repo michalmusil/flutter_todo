@@ -1,5 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:todo_list/components/forms/custom_input.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/services/auth/auth_exception.dart';
 import 'package:todo_list/services/auth/auth_service_impl.dart';
@@ -45,11 +45,11 @@ class _LoginScreenState extends State<LoginScreen> {
     try {
       await _authService.logIn(email: email, password: password);
       NavRouter.instance.toTasks(context);
-    } on UserNotFoundException catch(_) {
+    } on UserNotFoundException catch (_) {
       setState(() {
         _errorText = "E-mail not recognized";
       });
-    } on InvalidCredentialsException catch(_) {
+    } on InvalidCredentialsException catch (_) {
       setState(() {
         _errorText = "Invalid credentials";
       });
@@ -78,31 +78,23 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            TextField(
+            CustomInput(
               controller: _email,
-              autocorrect: false,
               keyboardType: TextInputType.emailAddress,
-              textCapitalization: TextCapitalization.none,
-              decoration: const InputDecoration(hintText: 'E-mail'),
+              hint: 'E-mail',
               onTap: () {
                 setState(() {
                   _errorText = null;
                 });
               },
             ),
-            TextField(
+            CustomInput(
               controller: _password,
-              keyboardType: TextInputType.text,
-              autocorrect: false,
               obscureText: true,
-              enableSuggestions: false,
-              textCapitalization: TextCapitalization.none,
-              decoration:
-                  InputDecoration(hintText: 'Password', errorText: _errorText),
+              hint: 'Password',
+              errorText: _errorText,
               onTap: () {
-                setState(() {
-                  _errorText = null;
-                });
+                _errorText = null;
               },
             ),
             OutlinedButton(

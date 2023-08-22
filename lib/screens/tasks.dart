@@ -18,13 +18,13 @@ class TasksScreen extends StatefulWidget {
 class _TasksScreenState extends State<TasksScreen> {
   late final IAuthService _authService;
   late final ITasksRepository _tasksRepository;
-  late final List<TaskModel> _tasks = [];
+  late List<TaskModel> _tasks = [];
 
   @override
   void initState() {
     _authService = AuthServiceImpl();
     _tasksRepository = TasksRepositoryImpl();
-    listenForTasks();
+    fetchTasks();
     super.initState();
   }
 
@@ -38,15 +38,12 @@ class _TasksScreenState extends State<TasksScreen> {
     super.dispose();
   }
 
-  Future<void> listenForTasks() async {
-    _tasksRepository.tasksStream().listen(
-      (tasks) {
-        setState(() {
-          _tasks.clear();
-          _tasks.addAll(tasks);
-        });
-      },
-    );
+  Future fetchTasks() async {
+    final tasks = await _tasksRepository.tasksStatic();
+    setState(() {
+      _tasks.clear();
+      _tasks.addAll(tasks);
+    });
   }
 
   @override
