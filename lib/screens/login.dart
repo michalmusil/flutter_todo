@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void logIn({required String email, required String password}) async {
+  _logIn({required String email, required String password}) async {
     try {
       await _authService.logIn(email: email, password: password);
       NavRouter.instance.toTasks(context);
@@ -102,9 +102,9 @@ class _LoginScreenState extends State<LoginScreen> {
             OutlinedButton(
               onPressed: () {
                 final email = _email.text;
-                final password = _email.text;
+                final password = _password.text;
                 if (email.isNotEmpty && password.isNotEmpty) {
-                  logIn(email: email, password: password);
+                  _logIn(email: email, password: password);
                 }
               },
               style: ButtonStyle(

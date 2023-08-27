@@ -40,7 +40,7 @@ class _RegistrationState extends State<Registration> {
     super.dispose();
   }
 
-  void register({required String email, required String password}) async {
+  _register({required String email, required String password}) async {
     try {
       await _authService.register(email: email, password: password);
       NavRouter.instance.toTasks(context);
@@ -106,9 +106,9 @@ class _RegistrationState extends State<Registration> {
             TextButton(
               onPressed: () {
                 final email = _email.text;
-                final password = _email.text;
+                final password = _password.text;
                 if (email.isNotEmpty && password.isNotEmpty) {
-                  register(email: email, password: password);
+                  _register(email: email, password: password);
                 }
               },
               style: ButtonStyle(
