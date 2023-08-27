@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/components/forms/custom_date_picker.dart';
+import 'package:todo_list/components/forms/custom_switch.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/model/repositories/itasks_repository.dart';
 import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
@@ -23,7 +25,6 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _description = TextEditingController();
   bool _done = false;
-  DateTime _created = DateTime.now();
   DateTime? _due;
 
   String? _nameError;
@@ -34,7 +35,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
     _existingTask = widget.task;
     _isUpdating = _existingTask != null;
 
-    initExistingTask();
+    _initExistingTask();
     super.initState();
   }
 
@@ -45,13 +46,45 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
     super.dispose();
   }
 
-  initExistingTask() {
+  _initExistingTask() {
     if (_existingTask != null) {
       _name.text = _existingTask!.name;
       _description.text = _existingTask!.description ?? '';
       _done = _existingTask!.done;
-      _created = _existingTask!.created;
       _due = _existingTask!.due;
+    }
+  }
+
+  _handleSave(BuildContext context) async {
+    if (_name.text.isEmpty) {
+      setState(() {
+        _nameError = "Name can't be left empty";
+      });
+      return;
+    }
+    if (_isUpdating && _existingTask != null) {
+      _existingTask!.name = _name.text;
+      _existingTask!.description = _description.text;
+      _existingTask!.done = _done;
+      _existingTask!.due = _due;
+
+      var updated = await _tasksRepository.updateTask(_existingTask!);
+      if (updated) {
+        NavRouter.instance.toTasks(context);
+      }
+    } else {
+      var newTask = TaskModel(
+        uuid: 'undefined',
+        name: _name.text,
+        description: _description.text,
+        done: _done,
+        created: DateTime.now(),
+        due: _due,
+      );
+      var created = await _tasksRepository.addTask(newTask);
+      if (created) {
+        NavRouter.instance.toTasks(context);
+      }
     }
   }
 
@@ -61,11 +94,9 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
-        title: Expanded(
-          child: Text(
-            (_isUpdating == true ? "Update task" : "Add task"),
-            overflow: TextOverflow.ellipsis,
-          ),
+        title: Text(
+          (_isUpdating == true ? "Update task" : "Add task"),
+          overflow: TextOverflow.ellipsis,
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
@@ -107,6 +138,52 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                 keyboardType: TextInputType.multiline,
                 maxLines: 5,
               ),
+              CustomSwitch(
+                value: _done,
+                onCheckChanged: (value) {
+                  setState(() {
+                    _done = value;
+                  });
+                },
+                label: "Done",
+              ),
+              CustomDatePicker(
+                label: "Due",
+                initialDate: _due,
+                onDatePicked: (newDate) {
+                  setState(() {
+                    _due = newDate;
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Center(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                  ),
+                  onPressed: () {
+                    _handleSave(context);
+                  },
+                  child: const IntrinsicWidth(
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.save_alt_rounded,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text("Save")
+                      ],
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),

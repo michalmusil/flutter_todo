@@ -88,7 +88,12 @@ class _TasksScreenState extends State<TasksScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          NavRouter.instance.toTaskCreateOrUpdate(
+            context,
+            task: null,
+          );
+        },
         backgroundColor: Theme.of(context).colorScheme.secondary,
         foregroundColor: Theme.of(context).colorScheme.onSecondary,
         child: const Icon(

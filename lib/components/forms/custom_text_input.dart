@@ -85,23 +85,24 @@ class _CustomTextInputState extends State<CustomTextInput> {
         alignment: Alignment.center,
         margin: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).colorScheme.shadow,
-                blurRadius: 5,
-                spreadRadius: -2,
-              ),
-            ],
-            borderRadius: BorderRadius.circular(10),
-            color: Theme.of(context).colorScheme.surface,
-            border: widget.errorText == null
-                ? null
-                : Border.all(
-                    color: Theme.of(context).colorScheme.error,
-                  )),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).colorScheme.shadow,
+              blurRadius: 5,
+              spreadRadius: -2,
+            ),
+          ],
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).colorScheme.surface,
+          border: widget.errorText == null
+              ? null
+              : Border.all(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+        ),
         child: Padding(
           padding: const EdgeInsets.symmetric(
-            horizontal: 8,
+            horizontal: 10,
             vertical: 2,
           ),
           child: TextField(

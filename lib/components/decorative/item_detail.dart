@@ -31,12 +31,12 @@ class ItemDetail extends StatelessWidget {
                     child: Icon(
                       icon,
                       size: 23,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
                   ),
                 ),
               const SizedBox(
-                width: 13,
+                width: 5,
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
