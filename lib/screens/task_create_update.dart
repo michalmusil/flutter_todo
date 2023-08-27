@@ -5,6 +5,7 @@ import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/model/repositories/itasks_repository.dart';
 import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
 
+import '../components/popups/confirmation_popup.dart';
 import '../model/tasks/task_model.dart';
 import '../navigation/nav_router.dart';
 
@@ -88,6 +89,15 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
     }
   }
 
+  _deleteTask(BuildContext context) async {
+    if (_isUpdating) {
+      var deleted = await _tasksRepository.deleteTask(_existingTask!);
+      if (deleted) {
+        NavRouter.instance.toTasks(context);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -105,14 +115,28 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
           },
         ),
         actions: [
-          IconButton(
+          Visibility(
+            visible: _isUpdating,
+            child: IconButton(
               onPressed: () {
-                // TODO()
+                showDialog(
+                  context: context,
+                  builder: (_) => ConfirmationPopup(
+                    title: "Delete task",
+                    message:
+                        "Are you sure you want to delete this task? This acction can't be undone.",
+                    onConfirm: () {
+                      _deleteTask(context);
+                    },
+                  ),
+                );
               },
               icon: Icon(
                 Icons.delete_rounded,
                 color: Theme.of(context).colorScheme.onPrimary,
-              ))
+              ),
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(

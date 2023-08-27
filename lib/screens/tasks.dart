@@ -18,13 +18,13 @@ class TasksScreen extends StatefulWidget {
 class _TasksScreenState extends State<TasksScreen> {
   late final IAuthService _authService;
   late final ITasksRepository _tasksRepository;
-  late List<TaskModel> _tasks = [];
+  // late List<TaskModel> _tasks = [];
 
   @override
   void initState() {
     _authService = AuthServiceImpl();
     _tasksRepository = TasksRepositoryImpl();
-    fetchTasks();
+    // fetchTasks();
     super.initState();
   }
 
@@ -38,13 +38,13 @@ class _TasksScreenState extends State<TasksScreen> {
     super.dispose();
   }
 
-  Future fetchTasks() async {
-    final tasks = await _tasksRepository.tasksStatic();
-    setState(() {
-      _tasks.clear();
-      _tasks.addAll(tasks);
-    });
-  }
+  // Future fetchTasks() async {
+  //   final tasks = await _tasksRepository.tasksStatic();
+  //   setState(() {
+  //     _tasks.clear();
+  //     _tasks.addAll(tasks);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -72,15 +72,24 @@ class _TasksScreenState extends State<TasksScreen> {
           vertical: 10,
           horizontal: 16,
         ),
-        child: ListView.builder(
-          itemCount: _tasks.length,
-          itemBuilder: (context, index) {
-            return TaskListItem(
-              task: _tasks[index],
-              onClick: () {
-                NavRouter.instance.toTaskDetail(
-                  context,
-                  task: _tasks[index],
+        child: StreamBuilder(
+          stream: _tasksRepository.tasksStream(),
+          builder: (context, snapshot) {
+            var newList = snapshot.data;
+            if (newList == null) {
+              return const Text("Loading");
+            }
+            return ListView.builder(
+              itemCount: newList.length,
+              itemBuilder: (context, index) {
+                return TaskListItem(
+                  task: newList[index],
+                  onClick: () {
+                    NavRouter.instance.toTaskDetail(
+                      context,
+                      task: newList[index],
+                    );
+                  },
                 );
               },
             );

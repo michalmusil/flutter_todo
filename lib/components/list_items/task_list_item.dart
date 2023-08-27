@@ -4,6 +4,9 @@ import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
 import 'package:todo_list/model/tasks/task_model.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
 
+import '../../navigation/nav_router.dart';
+import '../popups/confirmation_popup.dart';
+
 class TaskListItem extends StatefulWidget {
   final TaskModel task;
   final void Function() onClick;
@@ -11,23 +14,17 @@ class TaskListItem extends StatefulWidget {
   const TaskListItem({super.key, required this.task, required this.onClick});
 
   @override
-  State<TaskListItem> createState() => _TaskListItemState(task, onClick);
+  State<TaskListItem> createState() => _TaskListItemState();
 }
 
 class _TaskListItemState extends State<TaskListItem> {
-  final TaskModel _task;
-  final void Function() _onClick;
   late final ITasksRepository _tasksRepository;
   late bool _isChecked;
-
-  _TaskListItemState(this._task, this._onClick);
-
-  void delete() {}
 
   @override
   void initState() {
     _tasksRepository = TasksRepositoryImpl();
-    _isChecked = _task.done;
+    _isChecked = widget.task.done;
     super.initState();
   }
 
@@ -41,18 +38,22 @@ class _TaskListItemState extends State<TaskListItem> {
     super.dispose();
   }
 
-  void onCompletedChanged(bool newValue) {
-    _task.done = newValue;
-    _tasksRepository.updateTask(_task);
+  _onCompletedChanged(bool newValue) {
+    widget.task.done = newValue;
+    _tasksRepository.updateTask(widget.task);
     setState(() {
       _isChecked = newValue;
     });
   }
 
+  _deleteTask(BuildContext context) async {
+    await _tasksRepository.deleteTask(widget.task);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: _onClick,
+      onTap: widget.onClick,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 5.0),
         decoration: BoxDecoration(
@@ -69,7 +70,7 @@ class _TaskListItemState extends State<TaskListItem> {
                 value: _isChecked,
                 onChanged: (value) {
                   final valueToSet = value ?? _isChecked;
-                  onCompletedChanged(valueToSet);
+                  _onCompletedChanged(valueToSet);
                 },
                 activeColor: Theme.of(context).colorScheme.secondary,
                 checkColor: Theme.of(context).colorScheme.onSecondary,
@@ -86,14 +87,14 @@ class _TaskListItemState extends State<TaskListItem> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      _task.name,
+                      widget.task.name,
                       style: Theme.of(context).textTheme.titleMedium,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    if (_task.due != null)
+                    if (widget.task.due != null)
                       Text(
-                        DateTimeUtils.getDateString(_task.due!),
+                        DateTimeUtils.getDateString(widget.task.due!),
                         style: Theme.of(context).textTheme.labelSmall,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -115,7 +116,17 @@ class _TaskListItemState extends State<TaskListItem> {
                 ),
                 child: IconButton(
                   onPressed: () {
-                    delete();
+                    showDialog(
+                      context: context,
+                      builder: (_) => ConfirmationPopup(
+                        title: "Delete task",
+                        message:
+                            "Are you sure you want to delete this task? This acction can't be undone.",
+                        onConfirm: () {
+                          _deleteTask(context);
+                        },
+                      ),
+                    );
                   },
                   icon: Icon(
                     Icons.delete_rounded,
