@@ -76,7 +76,8 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
       }
     } else {
       var newTask = TaskModel(
-        uuid: 'undefined',
+        id: '',
+        userId: '',
         name: _name.text,
         description: _description.text,
         done: _done,

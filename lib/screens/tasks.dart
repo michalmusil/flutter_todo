@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/components/list_items/task_list_item.dart';
 import 'package:todo_list/model/repositories/itasks_repository.dart';
 import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
-import 'package:todo_list/model/tasks/task_model.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/services/auth/auth_service_impl.dart';
 
@@ -75,8 +74,21 @@ class _TasksScreenState extends State<TasksScreen> {
         builder: (context, snapshot) {
           var newList = snapshot.data;
           if (newList == null) {
-            return const Text("Loading");
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (newList.isEmpty) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  "You don't have any tasks yet. Add some by clicking the plus button.",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
           }
+
           return ListView.builder(
             itemCount: newList.length,
             padding: const EdgeInsets.symmetric(

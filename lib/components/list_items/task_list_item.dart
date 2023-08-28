@@ -77,7 +77,7 @@ class _TaskListItemState extends State<TaskListItem> {
   @override
   Widget build(BuildContext context) {
     return Dismissible(
-      key: Key(widget.task.uuid),
+      key: Key(widget.task.id),
       direction: DismissDirection.endToStart,
       background: _deleteBackground(context),
       secondaryBackground: _deleteBackground(context),
