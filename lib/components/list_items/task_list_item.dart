@@ -125,9 +125,13 @@ class _TaskListItemState extends State<TaskListItem> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       if (widget.task.due != null)
+                        const SizedBox(
+                          height: 5,
+                        ),
+                      if (widget.task.due != null)
                         Text(
                           DateTimeUtils.getDateString(widget.task.due!),
-                          style: Theme.of(context).textTheme.labelSmall,
+                          style: Theme.of(context).textTheme.labelMedium,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
