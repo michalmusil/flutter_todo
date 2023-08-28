@@ -88,8 +88,8 @@ class _CustomTextInputState extends State<CustomTextInput> {
           boxShadow: [
             BoxShadow(
               color: Theme.of(context).colorScheme.shadow,
-              blurRadius: 5,
-              spreadRadius: -2,
+              blurRadius: 8,
+              spreadRadius: -1
             ),
           ],
           borderRadius: BorderRadius.circular(10),
@@ -121,7 +121,7 @@ class _CustomTextInputState extends State<CustomTextInput> {
                   ? Text(
                       widget.label!,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     )
                   : null,

@@ -75,6 +75,7 @@ class _RegistrationState extends State<Registration> {
         title: const Text('Register'),
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -84,6 +85,7 @@ class _RegistrationState extends State<Registration> {
           children: [
             CustomTextInput(
               controller: _email,
+              allowClearButton: true,
               keyboardType: TextInputType.emailAddress,
               hint: 'E-mail',
               label: 'E-mail',
@@ -96,6 +98,7 @@ class _RegistrationState extends State<Registration> {
             CustomTextInput(
               controller: _password,
               obscureText: true,
+              allowClearButton: true,
               hint: 'Password',
               label: 'Password',
               errorText: _errorText,
@@ -123,7 +126,7 @@ class _RegistrationState extends State<Registration> {
                 child: Text(
                   'Go to login',
                   style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
             )

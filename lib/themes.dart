@@ -1,21 +1,37 @@
 import 'package:flutter/material.dart';
 
-const appColorScheme = ColorScheme(
+const lightColorScheme = ColorScheme(
+  brightness: Brightness.light,
+  primary: Color(0xFFFE8C7C),
+  onPrimary: Color(0xFFF1F1F1),
+  secondary: Color(0xFF3750C2),
+  onSecondary: Color(0xFFF1F1F1),
+  background: Color(0xFFF5F5F5),
+  onBackground: Color(0xFF191919),
+  surface: Color(0xFFE8E8E8),
+  onSurface: Color(0xFF191919),
+  error: Color(0xDAE10000),
+  onError: Color(0xFFF1F1F1),
+  shadow: Color(0xFF545454)
+);
+
+const darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xFF566299),
-  onPrimary: Color(0xFFD4D4D4),
-  secondary: Color(0xFFFCBFB7),
-  onSecondary: Color(0xFF191919),
+  primary: Color(0xFFFCBFB7),
+  onPrimary: Color(0xFF191919),
+  secondary: Color(0xFF3A82EE),
+  onSecondary: Color(0xFFD4D4D4),
   background: Color(0xFF191919),
   onBackground: Color(0xFFD4D4D4),
   surface: Color.fromARGB(255, 38, 38, 38),
   onSurface: Color.fromARGB(255, 212, 212, 212),
-  error: Color.fromARGB(255, 178, 0, 0),
-  onError: Color.fromARGB(255, 220, 220, 220),
+  error: Color(0xFFB20000),
+  onError: Color(0xFFDCDCDC),
+  shadow: Color.fromARGB(255, 79, 79, 79)
 );
 
 
-const appTextColor = Color.fromARGB(255, 212, 212, 212);
+const appTextColor = Color(0xFFD4D4D4);
 
 const appTextTheme = TextTheme(
   bodyLarge: TextStyle(color: appTextColor),

@@ -105,6 +105,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
+        elevation: 0,
         title: Text(
           (_isUpdating == true ? "Update task" : "Add task"),
           overflow: TextOverflow.ellipsis,
@@ -134,7 +135,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
               },
               icon: Icon(
                 Icons.delete_rounded,
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.onSecondary,
               ),
             ),
           ),

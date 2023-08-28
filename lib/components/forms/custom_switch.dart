@@ -46,6 +46,7 @@ class _CustomSwitchState extends State<CustomSwitch> {
                 widget.label,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
+                  fontWeight: FontWeight.bold,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -55,7 +56,6 @@ class _CustomSwitchState extends State<CustomSwitch> {
               value: widget.value,
               onChanged: widget.onCheckChanged,
               activeColor: Theme.of(context).colorScheme.primary,
-              activeTrackColor: Theme.of(context).colorScheme.secondary,
             )
           ],
         ),

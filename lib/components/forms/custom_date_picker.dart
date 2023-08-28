@@ -83,14 +83,14 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                   padding: EdgeInsets.zero,
                   icon: Container(
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(100),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8),
                       child: Icon(
                         Icons.calendar_month_rounded,
-                        color: Theme.of(context).colorScheme.onSecondary,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -103,7 +103,10 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                   children: [
                     Text(
                       widget.label,
-                      style: Theme.of(context).textTheme.labelSmall,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(
                       height: 5,

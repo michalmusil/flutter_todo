@@ -24,14 +24,14 @@ class ItemDetail extends StatelessWidget {
               if (icon != null)
                 Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(100)),
                   child: Padding(
                     padding: const EdgeInsets.all(8),
                     child: Icon(
                       icon,
                       size: 23,
-                      color: Theme.of(context).colorScheme.onBackground,
+                      color: Theme.of(context).colorScheme.onSecondary,
                     ),
                   ),
                 ),
@@ -43,7 +43,7 @@ class ItemDetail extends StatelessWidget {
                 children: [
                   Text(
                     label,
-                    style: Theme.of(context).textTheme.labelSmall,
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
                   const SizedBox(
                     height: 5,

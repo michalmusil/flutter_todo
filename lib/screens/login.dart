@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/navigation/nav_router.dart';
@@ -72,6 +73,12 @@ class _LoginScreenState extends State<LoginScreen> {
         title: const Text('Login'),
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
+        elevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness: Theme.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
+          statusBarBrightness: Theme.of(context).brightness == Brightness.light ? Brightness.dark : Brightness.light,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -81,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             CustomTextInput(
               controller: _email,
+              allowClearButton: true,
               keyboardType: TextInputType.emailAddress,
               hint: 'E-mail',
               label: 'E-mail',
@@ -93,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
             CustomTextInput(
               controller: _password,
               obscureText: true,
+              allowClearButton: true,
               hint: 'Password',
               label: 'Password',
               errorText: _errorText,
@@ -120,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Text(
                   'Go to registration',
                   style:
-                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      TextStyle(color: Theme.of(context).colorScheme.primary),
                 ),
               ),
             )

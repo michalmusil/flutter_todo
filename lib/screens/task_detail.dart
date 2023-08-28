@@ -45,6 +45,7 @@ class _TaskDetailState extends State<TaskDetail> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
+        elevation: 0,
         title: const Text(
           "Task detail",
           overflow: TextOverflow.ellipsis,
@@ -72,7 +73,7 @@ class _TaskDetailState extends State<TaskDetail> {
               },
               icon: Icon(
                 Icons.delete_rounded,
-                color: Theme.of(context).colorScheme.onPrimary,
+                color: Theme.of(context).colorScheme.onSecondary,
               ))
         ],
       ),

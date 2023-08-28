@@ -104,8 +104,8 @@ class _TaskListItemState extends State<TaskListItem> {
                     final valueToSet = value ?? _isChecked;
                     _onCompletedChanged(valueToSet);
                   },
-                  activeColor: Theme.of(context).colorScheme.secondary,
-                  checkColor: Theme.of(context).colorScheme.onSecondary,
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  checkColor: Theme.of(context).colorScheme.onPrimary,
                   shape: const CircleBorder(),
                   side: BorderSide(
                     color: Theme.of(context).colorScheme.onSurface,

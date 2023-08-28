@@ -54,6 +54,7 @@ class _TasksScreenState extends State<TasksScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
+        elevation: 0,
         actions: [
           TextButton(
             onPressed: () {
@@ -63,40 +64,38 @@ class _TasksScreenState extends State<TasksScreen> {
             child: Text(
               "Logout",
               style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary,
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 10,
-          horizontal: 16,
-        ),
-        child: StreamBuilder(
-          stream: _tasksRepository.tasksStream(),
-          builder: (context, snapshot) {
-            var newList = snapshot.data;
-            if (newList == null) {
-              return const Text("Loading");
-            }
-            return ListView.builder(
-              itemCount: newList.length,
-              itemBuilder: (context, index) {
-                return TaskListItem(
-                  task: newList[index],
-                  onClick: () {
-                    NavRouter.instance.toTaskDetail(
-                      context,
-                      task: newList[index],
-                    );
-                  },
-                );
-              },
-            );
-          },
-        ),
+      body: StreamBuilder(
+        stream: _tasksRepository.tasksStream(),
+        builder: (context, snapshot) {
+          var newList = snapshot.data;
+          if (newList == null) {
+            return const Text("Loading");
+          }
+          return ListView.builder(
+            itemCount: newList.length,
+            padding: const EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 16,
+            ),
+            itemBuilder: (context, index) {
+              return TaskListItem(
+                task: newList[index],
+                onClick: () {
+                  NavRouter.instance.toTaskDetail(
+                    context,
+                    task: newList[index],
+                  );
+                },
+              );
+            },
+          );
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -105,8 +104,11 @@ class _TasksScreenState extends State<TasksScreen> {
             task: null,
           );
         },
-        backgroundColor: Theme.of(context).colorScheme.secondary,
-        foregroundColor: Theme.of(context).colorScheme.onSecondary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
         child: const Icon(
           Icons.add,
         ),

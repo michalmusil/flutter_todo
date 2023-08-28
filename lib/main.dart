@@ -33,9 +33,14 @@ class TodoApplication extends StatelessWidget {
         title: 'Todo app',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: appColorScheme,
-          textTheme: appTextTheme,
-          useMaterial3: true,
+          scaffoldBackgroundColor: lightColorScheme.background,
+          brightness: Brightness.light,
+          colorScheme: lightColorScheme,
+        ),
+        darkTheme: ThemeData(
+          scaffoldBackgroundColor: darkColorScheme.background,
+          brightness: Brightness.dark,
+          colorScheme: darkColorScheme,
         ),
         home: const LoginScreen(),
         onGenerateRoute: (settings) {
@@ -44,8 +49,10 @@ class TodoApplication extends StatelessWidget {
             Routes.login.route: (context) => const LoginScreen(),
             Routes.registration.route: (context) => const Registration(),
             Routes.tasks.route: (context) => const TasksScreen(),
-            Routes.taskDetail.route: (context) => TaskDetail(task: arguments as TaskModel),
-            Routes.taskCreateOrUpdate.route: (context) => TaskCreateUpdate(task: arguments as TaskModel?),
+            Routes.taskDetail.route: (context) =>
+                TaskDetail(task: arguments as TaskModel),
+            Routes.taskCreateOrUpdate.route: (context) =>
+                TaskCreateUpdate(task: arguments as TaskModel?),
           };
           final currentBuilder = routes[settings.name]!;
           return MaterialPageRoute(builder: (ctx) => currentBuilder(ctx));

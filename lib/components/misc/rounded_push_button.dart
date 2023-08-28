@@ -23,10 +23,13 @@ class RoundedPushButton extends StatelessWidget {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor:
-            backgroundColor ?? Theme.of(context).colorScheme.secondary,
+            backgroundColor ?? Theme.of(context).colorScheme.primary,
         foregroundColor:
-            foregroundColor ?? Theme.of(context).colorScheme.onSecondary,
+            foregroundColor ?? Theme.of(context).colorScheme.onPrimary,
         shadowColor: Theme.of(context).colorScheme.shadow,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(100),
+        ),
       ),
       onPressed: onClick,
       child: expand
@@ -55,7 +58,7 @@ class RoundedPushButton extends StatelessWidget {
                     Icon(
                       icon,
                       color: foregroundColor ??
-                          Theme.of(context).colorScheme.onSecondary,
+                          Theme.of(context).colorScheme.onPrimary,
                     ),
                   if (icon != null)
                     const SizedBox(
