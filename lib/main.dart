@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:todo_list/model/tasks/task_model.dart';
 import 'package:todo_list/navigation/routes.dart';
 import 'package:todo_list/screens/login.dart';
