@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/components/forms/custom_date_picker.dart';
 import 'package:todo_list/components/forms/custom_switch.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
+import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/model/repositories/itasks_repository.dart';
 import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
 
@@ -102,8 +103,8 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        foregroundColor: Theme.of(context).colorScheme.onBackground,
         title: Text(
           (_isUpdating == true ? "Update task" : "Add task"),
           overflow: TextOverflow.ellipsis,
@@ -183,30 +184,17 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
               const SizedBox(
                 height: 15,
               ),
-              Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    foregroundColor: Theme.of(context).colorScheme.onSecondary,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  RoundedPushButton(
+                    text: "Save",
+                    icon: Icons.save_alt_rounded,
+                    onClick: () {
+                      _handleSave(context);
+                    },
                   ),
-                  onPressed: () {
-                    _handleSave(context);
-                  },
-                  child: const IntrinsicWidth(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.save_alt_rounded,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text("Save")
-                      ],
-                    ),
-                  ),
-                ),
+                ],
               )
             ],
           ),

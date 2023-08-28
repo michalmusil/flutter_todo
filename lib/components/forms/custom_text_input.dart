@@ -121,7 +121,7 @@ class _CustomTextInputState extends State<CustomTextInput> {
                   ? Text(
                       widget.label!,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     )
                   : null,

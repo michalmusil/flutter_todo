@@ -52,17 +52,19 @@ class _TasksScreenState extends State<TasksScreen> {
       appBar: AppBar(
         title: const Text('Your tasks'),
         automaticallyImplyLeading: false,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        foregroundColor: Theme.of(context).colorScheme.onBackground,
         actions: [
-          IconButton(
+          TextButton(
             onPressed: () {
               _authService.logOut();
               NavRouter.instance.toLogin(context);
             },
-            icon: Icon(
-              Icons.logout_rounded,
-              color: Theme.of(context).colorScheme.onPrimary,
+            child: Text(
+              "Logout",
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+              ),
             ),
           ),
         ],

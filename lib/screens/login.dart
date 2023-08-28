@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
+import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/services/auth/auth_exception.dart';
 import 'package:todo_list/services/auth/auth_service_impl.dart';
@@ -69,8 +70,8 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        foregroundColor: Theme.of(context).colorScheme.onBackground,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -99,20 +100,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 _errorText = null;
               },
             ),
-            OutlinedButton(
-              onPressed: () {
+            RoundedPushButton(
+              text: "Log in",
+              icon: Icons.login_rounded,
+              onClick: () {
                 final email = _email.text;
                 final password = _password.text;
                 if (email.isNotEmpty && password.isNotEmpty) {
                   _logIn(email: email, password: password);
                 }
               },
-              style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                      Theme.of(context).colorScheme.secondary),
-                  foregroundColor: MaterialStatePropertyAll(
-                      Theme.of(context).colorScheme.onSecondary)),
-              child: const Text('Log in'),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
@@ -120,7 +117,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () {
                   NavRouter.instance.toRegistration(context);
                 },
-                child: const Text('Go to registration'),
+                child: Text(
+                  'Go to registration',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                ),
               ),
             )
           ],

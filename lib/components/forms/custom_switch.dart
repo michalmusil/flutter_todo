@@ -54,6 +54,8 @@ class _CustomSwitchState extends State<CustomSwitch> {
             Switch(
               value: widget.value,
               onChanged: widget.onCheckChanged,
+              activeColor: Theme.of(context).colorScheme.primary,
+              activeTrackColor: Theme.of(context).colorScheme.secondary,
             )
           ],
         ),

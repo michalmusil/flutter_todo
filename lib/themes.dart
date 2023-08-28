@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 const appColorScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color.fromARGB(255, 0, 64, 109),
-  onPrimary: Color.fromARGB(255, 212, 212, 212),
-  secondary: Color.fromARGB(255, 11, 196, 113),
-  onSecondary: Color.fromARGB(255, 222, 222, 222),
-  background: Color.fromARGB(255, 25, 25, 25),
-  onBackground: Color.fromARGB(255, 212, 212, 212),
+  primary: Color(0xFF566299),
+  onPrimary: Color(0xFFD4D4D4),
+  secondary: Color(0xFFFCBFB7),
+  onSecondary: Color(0xFF191919),
+  background: Color(0xFF191919),
+  onBackground: Color(0xFFD4D4D4),
   surface: Color.fromARGB(255, 38, 38, 38),
   onSurface: Color.fromARGB(255, 212, 212, 212),
   error: Color.fromARGB(255, 178, 0, 0),

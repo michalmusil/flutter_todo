@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/components/decorative/item_detail.dart';
+import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/components/popups/confirmation_popup.dart';
 import 'package:todo_list/model/repositories/itasks_repository.dart';
 import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
@@ -33,7 +34,7 @@ class _TaskDetailState extends State<TaskDetail> {
 
   _deleteTask(BuildContext context) async {
     var deleted = await _tasksRepository.deleteTask(_task);
-    if(deleted){
+    if (deleted) {
       NavRouter.instance.toTasks(context);
     }
   }
@@ -42,8 +43,8 @@ class _TaskDetailState extends State<TaskDetail> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        foregroundColor: Theme.of(context).colorScheme.onBackground,
         title: const Text(
           "Task detail",
           overflow: TextOverflow.ellipsis,
@@ -131,25 +132,18 @@ class _TaskDetailState extends State<TaskDetail> {
               const SizedBox(
                 height: 20,
               ),
-              Center(
-                child: ElevatedButton(
-                    onPressed: () {
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  RoundedPushButton(
+                    text: "Edit",
+                    icon: Icons.edit,
+                    onClick: () {
                       NavRouter.instance
                           .toTaskCreateOrUpdate(context, task: _task);
                     },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Theme.of(context).colorScheme.secondary,
-                        foregroundColor:
-                            Theme.of(context).colorScheme.onSecondary),
-                    child: const IntrinsicWidth(
-                      child: Row(
-                        children: [
-                          Icon(Icons.edit),
-                          Text("Edit"),
-                        ],
-                      ),
-                    )),
+                  ),
+                ],
               )
             ],
           ),

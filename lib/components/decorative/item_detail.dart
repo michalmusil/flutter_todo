@@ -24,7 +24,7 @@ class ItemDetail extends StatelessWidget {
               if (icon != null)
                 Container(
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.background,
+                      color: Theme.of(context).colorScheme.primary,
                       borderRadius: BorderRadius.circular(100)),
                   child: Padding(
                     padding: const EdgeInsets.all(8),

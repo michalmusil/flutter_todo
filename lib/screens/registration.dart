@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/services/auth/auth_service_impl.dart';
 import 'package:todo_list/services/auth/iauth_service.dart';
 
@@ -15,7 +16,7 @@ class Registration extends StatefulWidget {
 
 class _RegistrationState extends State<Registration> {
   late final IAuthService _authService;
-  
+
   late final TextEditingController _email;
   late final TextEditingController _password;
   String? _errorText;
@@ -44,20 +45,19 @@ class _RegistrationState extends State<Registration> {
     try {
       await _authService.register(email: email, password: password);
       NavRouter.instance.toTasks(context);
-    } on InvalidCredentialsException catch(_) {
+    } on InvalidCredentialsException catch (_) {
       setState(() {
         _errorText = "Credentials not valid";
       });
-    } on WeakPasswordException catch(_) {
+    } on WeakPasswordException catch (_) {
       setState(() {
         _errorText = "Password was too weak";
       });
-    } on EmailAlreadyInUseException catch(_) {
+    } on EmailAlreadyInUseException catch (_) {
       setState(() {
         _errorText = "E-mail is already in use";
       });
-    }
-    catch (e) {
+    } catch (e) {
       setState(() {
         _errorText = "Registration wasn't successful";
       });
@@ -73,8 +73,8 @@ class _RegistrationState extends State<Registration> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.background,
+        foregroundColor: Theme.of(context).colorScheme.onBackground,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -103,20 +103,16 @@ class _RegistrationState extends State<Registration> {
                 _errorText = null;
               },
             ),
-            TextButton(
-              onPressed: () {
+            RoundedPushButton(
+              text: "Register",
+              icon: Icons.person,
+              onClick: () {
                 final email = _email.text;
                 final password = _password.text;
                 if (email.isNotEmpty && password.isNotEmpty) {
                   _register(email: email, password: password);
                 }
               },
-              style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(
-                      Theme.of(context).colorScheme.secondary),
-                  foregroundColor: MaterialStatePropertyAll(
-                      Theme.of(context).colorScheme.onSecondary)),
-              child: const Text('Register'),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
@@ -124,7 +120,11 @@ class _RegistrationState extends State<Registration> {
                 onPressed: () {
                   NavRouter.instance.toLogin(context);
                 },
-                child: const Text('Go to login'),
+                child: Text(
+                  'Go to login',
+                  style:
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
+                ),
               ),
             )
           ],
