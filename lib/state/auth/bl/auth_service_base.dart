@@ -1,9 +1,7 @@
-import 'package:todo_list/model/user/auth_user.dart';
+import '../model/auth_user.dart';
 
-abstract class IAuthService {
+abstract class AuthServiceBase{
   AuthUser? get user;
-
-  bool get isLoggedIn;
 
   Future<AuthUser> logIn({required String email, required String password});
 

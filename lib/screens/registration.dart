@@ -1,83 +1,50 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
-import 'package:todo_list/services/auth/auth_service_impl.dart';
-import 'package:todo_list/services/auth/iauth_service.dart';
+import 'package:todo_list/navigation/nav_router.dart';
+import 'package:todo_list/state/auth/providers/auth_notifier_provider.dart';
+import 'package:todo_list/state/auth/providers/registration_error_provider.dart';
+import 'package:todo_list/state/auth/providers/user_provider.dart';
+import 'package:todo_list/utils/images.dart';
 
-import '../components/forms/custom_text_input.dart';
-import '../navigation/nav_router.dart';
-import '../services/auth/auth_exception.dart';
-import '../utils/images.dart';
+import '../state/auth/providers/login_error_provider.dart';
 
-class Registration extends StatefulWidget {
-  const Registration({super.key});
+class Registration extends ConsumerWidget {
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
 
-  @override
-  State<Registration> createState() => _RegistrationState();
-}
-
-class _RegistrationState extends State<Registration> {
-  late final IAuthService _authService;
-
-  late final TextEditingController _email;
-  late final TextEditingController _password;
-  String? _errorText;
+  Registration({super.key});
 
   @override
-  void initState() {
-    _authService = AuthServiceImpl();
-    _email = TextEditingController();
-    _password = TextEditingController();
-    super.initState();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
+      statusBarBrightness: Theme.of(context).brightness == Brightness.light
+          ? Brightness.dark
+          : Brightness.light,
+    ));
 
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-  }
+    ref.listen(
+      userProvider,
+      (previous, currentUser) {
+        if (currentUser != null) {
+          NavRouter.instance.toTasks(context);
+        }
+      },
+    );
 
-  @override
-  void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
-
-  _register({required String email, required String password}) async {
-    try {
-      await _authService.register(email: email, password: password);
-      NavRouter.instance.toTasks(context);
-    } on InvalidCredentialsException catch (_) {
-      setState(() {
-        _errorText = "Credentials not valid";
-      });
-    } on WeakPasswordException catch (_) {
-      setState(() {
-        _errorText = "Password was too weak";
-      });
-    } on EmailAlreadyInUseException catch (_) {
-      setState(() {
-        _errorText = "E-mail is already in use";
-      });
-    } catch (e) {
-      setState(() {
-        _errorText = "Registration wasn't successful";
-      });
-    } finally {
-      setState(() {
-        _password.text = "";
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 16.0,
+              horizontal: 16,
               vertical: 80,
             ),
             child: Column(
@@ -105,56 +72,82 @@ class _RegistrationState extends State<Registration> {
                 const SizedBox(
                   height: 30,
                 ),
-                CustomTextInput(
-                  controller: _email,
-                  allowClearButton: true,
-                  keyboardType: TextInputType.emailAddress,
-                  hint: 'E-mail',
-                  label: 'E-mail',
-                  onTap: () {
-                    setState(() {
-                      _errorText = null;
-                    });
+                Consumer(
+                  builder: (context, ref, child) {
+                    return CustomTextInput(
+                      controller: _email,
+                      keyboardType: TextInputType.emailAddress,
+                      hint: 'E-mail',
+                      label: 'E-mail',
+                      onTap: () {
+                        ref.read(registrationErrorProvider.notifier).state =
+                            null;
+                      },
+                    );
                   },
                 ),
-                CustomTextInput(
-                  controller: _password,
-                  obscureText: true,
-                  allowClearButton: true,
-                  hint: 'Password',
-                  label: 'Password',
-                  errorText: _errorText,
-                  onTap: () {
-                    _errorText = null;
+                Consumer(
+                  builder: (context, ref, child) {
+                    final errorMessage = ref.watch(registrationErrorProvider);
+                    ref.listen(
+                      registrationErrorProvider,
+                      (previous, errorText) {
+                        if (errorText != null) {
+                          _password.text = "";
+                        }
+                      },
+                    );
+                    return CustomTextInput(
+                      controller: _password,
+                      obscureText: true,
+                      hint: 'Password',
+                      label: 'Password',
+                      errorText: errorMessage,
+                      onTap: () {
+                        ref.read(registrationErrorProvider.notifier).state =
+                            null;
+                      },
+                    );
                   },
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                RoundedPushButton(
-                  text: "Register",
-                  icon: Icons.person,
-                  onClick: () {
-                    final email = _email.text;
-                    final password = _password.text;
-                    if (email.isNotEmpty && password.isNotEmpty) {
-                      _register(email: email, password: password);
-                    }
+                Consumer(
+                  builder: (context, ref, child) {
+                    final authNotifier =
+                        ref.watch(authNotifierProvider.notifier);
+
+                    return RoundedPushButton(
+                      text: "Register",
+                      icon: Icons.person,
+                      onClick: () {
+                        final email = _email.text;
+                        final password = _password.text;
+                        if (email.isNotEmpty && password.isNotEmpty) {
+                          authNotifier.register(
+                              email: email, password: password);
+                        }
+                      },
+                    );
                   },
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                   child: TextButton(
                     onPressed: () {
+                      ref.read(loginErrorProvider.notifier).state = null;
+                      ref.read(registrationErrorProvider.notifier).state = null;
                       NavRouter.instance.toLogin(context);
                     },
                     child: Text(
                       'Go to login',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),

@@ -5,7 +5,11 @@ class AuthUser {
   final String email;
   final bool isVerified;
 
-  AuthUser({required this.uuid, required this.email, required this.isVerified});
+  AuthUser({
+    required this.uuid,
+    required this.email,
+    required this.isVerified,
+  });
 
   factory AuthUser.fromFirebaseUser(User user) {
     final id = user.uid;

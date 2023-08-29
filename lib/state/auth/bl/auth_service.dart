@@ -1,19 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:todo_list/model/user/auth_user.dart';
-import 'package:todo_list/services/auth/iauth_service.dart';
+import 'package:todo_list/state/auth/bl/auth_service_base.dart';
+import 'package:todo_list/state/auth/model/auth_user.dart';
 
-import 'auth_exception.dart';
+import '../model/auth_exception.dart';
 
-class AuthServiceImpl implements IAuthService {
+class AuthService implements AuthServiceBase {
+
   @override
   AuthUser? get user {
-    final firebaseUser = FirebaseAuth.instance.currentUser;
-    return firebaseUser != null ? AuthUser.fromFirebaseUser(firebaseUser) : null;
+    final temp = FirebaseAuth.instance.currentUser;
+    if(temp != null){
+      return AuthUser.fromFirebaseUser(temp);
+    }
+    return null;
   }
 
-  @override
-  bool get isLoggedIn => user != null;
-
+  const AuthService();
 
   @override
   Future<AuthUser> logIn({required String email, required String password}) async {

@@ -1,75 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/navigation/nav_router.dart';
-import 'package:todo_list/services/auth/auth_exception.dart';
-import 'package:todo_list/services/auth/auth_service_impl.dart';
-import 'package:todo_list/services/auth/iauth_service.dart';
+import 'package:todo_list/state/auth/providers/auth_notifier_provider.dart';
+import 'package:todo_list/state/auth/providers/login_error_provider.dart';
+import 'package:todo_list/state/auth/providers/user_provider.dart';
 import 'package:todo_list/utils/images.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+import '../state/auth/providers/registration_error_provider.dart';
+
+class Login extends ConsumerWidget {
+  final TextEditingController _email = TextEditingController();
+  final TextEditingController _password = TextEditingController();
+
+  Login({super.key});
 
   @override
-  State<StatefulWidget> createState() {
-    return _LoginScreenState();
-  }
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  late final IAuthService _authService;
-
-  late final TextEditingController _email;
-  late final TextEditingController _password;
-  String? _errorText;
-
-  @override
-  void initState() {
-    _email = TextEditingController();
-    _password = TextEditingController();
-    _authService = AuthServiceImpl();
-    super.initState();
-  }
-
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-  }
-
-  @override
-  void dispose() {
-    _email.dispose();
-    _password.dispose();
-    super.dispose();
-  }
-
-  _logIn({required String email, required String password}) async {
-    try {
-      await _authService.logIn(email: email, password: password);
-      NavRouter.instance.toTasks(context);
-    } on UserNotFoundException catch (_) {
-      setState(() {
-        _errorText = "E-mail not recognized";
-      });
-    } on InvalidCredentialsException catch (_) {
-      setState(() {
-        _errorText = "Invalid credentials";
-      });
-    } catch (e) {
-      setState(() {
-        _errorText = "Logging in wasn't successful";
-      });
-    } finally {
-      setState(() {
-        _password.text = "";
-      });
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
@@ -79,6 +29,15 @@ class _LoginScreenState extends State<LoginScreen> {
           ? Brightness.dark
           : Brightness.light,
     ));
+
+    ref.listen(
+      userProvider,
+      (previous, currentUser) {
+        if (currentUser != null) {
+          NavRouter.instance.toTasks(context);
+        }
+      },
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -92,7 +51,6 @@ class _LoginScreenState extends State<LoginScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                //const Spacer(),
                 SvgPicture.asset(
                   Images.appIcon.url,
                   width: 130,
@@ -114,47 +72,70 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 30,
                 ),
-                CustomTextInput(
-                  controller: _email,
-                  allowClearButton: true,
-                  keyboardType: TextInputType.emailAddress,
-                  hint: 'E-mail',
-                  label: 'E-mail',
-                  onTap: () {
-                    setState(() {
-                      _errorText = null;
-                    });
+                Consumer(
+                  builder: (context, ref, child) {
+                    return CustomTextInput(
+                      controller: _email,
+                      keyboardType: TextInputType.emailAddress,
+                      hint: 'E-mail',
+                      label: 'E-mail',
+                      onTap: () {
+                        ref.read(loginErrorProvider.notifier).state = null;
+                      },
+                    );
                   },
                 ),
-                CustomTextInput(
-                  controller: _password,
-                  obscureText: true,
-                  allowClearButton: true,
-                  hint: 'Password',
-                  label: 'Password',
-                  errorText: _errorText,
-                  onTap: () {
-                    _errorText = null;
+                Consumer(
+                  builder: (context, ref, child) {
+                    final errorMessage = ref.watch(loginErrorProvider);
+                    ref.listen(
+                      loginErrorProvider,
+                      (previous, errorText) {
+                        if (errorText != null) {
+                          _password.text = "";
+                        }
+                      },
+                    );
+
+                    return CustomTextInput(
+                      controller: _password,
+                      obscureText: true,
+                      hint: 'Password',
+                      label: 'Password',
+                      errorText: errorMessage,
+                      onTap: () {
+                        ref.read(loginErrorProvider.notifier).state = null;
+                      },
+                    );
                   },
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                RoundedPushButton(
-                  text: "Log in",
-                  icon: Icons.login_rounded,
-                  onClick: () {
-                    final email = _email.text;
-                    final password = _password.text;
-                    if (email.isNotEmpty && password.isNotEmpty) {
-                      _logIn(email: email, password: password);
-                    }
+                Consumer(
+                  builder: (context, ref, child) {
+                    final authNotifier =
+                        ref.watch(authNotifierProvider.notifier);
+
+                    return RoundedPushButton(
+                      text: "Log in",
+                      icon: Icons.login_rounded,
+                      onClick: () {
+                        final email = _email.text;
+                        final password = _password.text;
+                        if (email.isNotEmpty && password.isNotEmpty) {
+                          authNotifier.logIn(email: email, password: password);
+                        }
+                      },
+                    );
                   },
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
                   child: TextButton(
                     onPressed: () {
+                      ref.read(registrationErrorProvider.notifier).state = null;
+                      ref.read(loginErrorProvider.notifier).state = null;
                       NavRouter.instance.toRegistration(context);
                     },
                     child: Text(
@@ -165,7 +146,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                //const Spacer(),
               ],
             ),
           ),
