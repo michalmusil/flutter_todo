@@ -1,31 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:todo_list/model/repositories/itasks_repository.dart';
-import 'package:todo_list/model/tasks/task_model.dart';
+import 'package:todo_list/state/tasks/repositories/tasks_repository_base.dart';
+import 'package:todo_list/state/tasks/models/task_model.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
 
-import '../../state/auth/model/auth_user.dart';
 
-class TasksRepositoryImpl implements ITasksRepository {
+class TasksRepository implements TasksRepositoryBase {
   final _tasksCollection = FirebaseFirestore.instance.collection('tasks');
 
-  // TODO(delete later)
-  AuthUser? get user {
-    final temp = FirebaseAuth.instance.currentUser;
-    if(temp != null){
-      return AuthUser.fromFirebaseUser(temp);
-    }
-    return null;
-  }
-
   @override
-  Stream<List<TaskModel>> tasksStream() {
-    if (user == null) {
-      return const Stream.empty();
-    }
+  Stream<Iterable<TaskModel>> tasksStream({required String userId}) {
 
     return _tasksCollection
-        .where('userId', isEqualTo: user!.uuid)
+        .where('userId', isEqualTo: userId)
         .orderBy('due')
         .snapshots(includeMetadataChanges: true)
         .map((querySnapshot) {
@@ -42,17 +28,13 @@ class TasksRepositoryImpl implements ITasksRepository {
   }
 
   @override
-  Stream<TaskModel?> taskStream(String taskUuid) {
-    if (user == null) {
-      return const Stream.empty();
-    }
-
+  Stream<TaskModel?> taskStream({required String userId, required String taskId}) {
     return _tasksCollection
-        .doc(taskUuid)
+        .doc(taskId)
         .snapshots(includeMetadataChanges: true)
         .map((documentSnapshot) {
       final data = documentSnapshot.data();
-      if (data != null && data['userId'] == user!.uuid) {
+      if (data != null && data['userId'] == userId) {
         return TaskModel.getFromFirestoreInstance(documentSnapshot.id, data);
       }
       return null;
@@ -60,14 +42,10 @@ class TasksRepositoryImpl implements ITasksRepository {
   }
 
   @override
-  Future<List<TaskModel>> tasksStatic() async {
-    if (user == null) {
-      return [];
-    }
-
+  Future<Iterable<TaskModel>> tasksStatic({required String userId}) async {
     final List<TaskModel> tasks = [];
     final collection = await _tasksCollection
-        .where('userId', isEqualTo: user!.uuid)
+        .where('userId', isEqualTo: userId)
         .orderBy('due')
         .get();
     for (final item in collection.docs) {
@@ -80,25 +58,17 @@ class TasksRepositoryImpl implements ITasksRepository {
   }
 
   @override
-  Future<TaskModel?> taskStatic(String taskUuid) async {
-    if (user == null) {
-      return null;
-    }
-
-    final taskSnapshot = await _tasksCollection.doc(taskUuid).get();
+  Future<TaskModel?> taskStatic({required String userId, required String taskId}) async {
+    final taskSnapshot = await _tasksCollection.doc(taskId).get();
     final data = taskSnapshot.data();
-    if (data != null && data['userId'] == user!.uuid) {
+    if (data != null && data['userId'] == userId) {
       return TaskModel.getFromFirestoreInstance(taskSnapshot.id, data);
     }
     return null;
   }
 
   @override
-  Future<bool> addTask(TaskModel task) async {
-    if (user == null) {
-      return false;
-    }
-
+  Future<bool> addTask({required String userId, required TaskModel task}) async {
     final created = DateTimeUtils.dateTimeToFirebaseTimestamp(task.created);
     final due = (task.due != null)
         ? DateTimeUtils.dateTimeToFirebaseTimestamp(task.due!)
@@ -106,7 +76,7 @@ class TasksRepositoryImpl implements ITasksRepository {
     try {
       await _tasksCollection.add({
         'name': task.name,
-        'userId': user!.uuid,
+        'userId': userId,
         'done': task.done,
         'created': created,
         'description': task.description,

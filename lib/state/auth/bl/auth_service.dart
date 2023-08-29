@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:todo_list/state/auth/bl/auth_service_base.dart';
-import 'package:todo_list/state/auth/model/auth_user.dart';
+import 'package:todo_list/state/auth/models/auth_user.dart';
 
-import '../model/auth_exception.dart';
+import '../models/auth_exception.dart';
 
 class AuthService implements AuthServiceBase {
 

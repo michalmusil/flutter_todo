@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/model/tasks/task_model.dart';
+import 'package:todo_list/state/tasks/models/task_model.dart';
 import 'package:todo_list/navigation/routes.dart';
 import 'package:todo_list/screens/login.dart';
 import 'package:todo_list/screens/registration.dart';
@@ -47,7 +47,7 @@ class TodoApplication extends StatelessWidget {
         final routes = <String, WidgetBuilder>{
           Routes.login.route: (context) => Login(),
           Routes.registration.route: (context) => Registration(),
-          Routes.tasks.route: (context) => Tasks(),
+          Routes.tasks.route: (context) => const Tasks(),
           Routes.taskDetail.route: (context) =>
               TaskDetail(task: arguments as TaskModel),
           Routes.taskCreateOrUpdate.route: (context) =>

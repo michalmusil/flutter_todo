@@ -1,5 +1,5 @@
-import 'package:todo_list/state/auth/model/auth_exception.dart';
-import 'package:todo_list/state/auth/model/auth_user.dart';
+import 'package:todo_list/state/auth/models/auth_exception.dart';
+import 'package:todo_list/state/auth/models/auth_user.dart';
 
 class AuthState {
   final AuthUser? user;

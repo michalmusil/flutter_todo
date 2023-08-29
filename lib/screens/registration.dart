@@ -34,7 +34,7 @@ class Registration extends ConsumerWidget {
       userProvider,
       (previous, currentUser) {
         if (currentUser != null) {
-          NavRouter.instance.toTasks(context);
+          NavRouter.instance().toTasks(context);
         }
       },
     );
@@ -138,7 +138,7 @@ class Registration extends ConsumerWidget {
                     onPressed: () {
                       ref.read(loginErrorProvider.notifier).state = null;
                       ref.read(registrationErrorProvider.notifier).state = null;
-                      NavRouter.instance.toLogin(context);
+                      NavRouter.instance().toLogin(context);
                     },
                     child: Text(
                       'Go to login',

@@ -1,4 +1,4 @@
-import '../model/auth_user.dart';
+import '../models/auth_user.dart';
 
 abstract class AuthServiceBase{
   AuthUser? get user;

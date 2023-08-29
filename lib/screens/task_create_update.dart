@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/forms/custom_date_picker.dart';
 import 'package:todo_list/components/forms/custom_switch.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
-import 'package:todo_list/model/repositories/itasks_repository.dart';
-import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
+import 'package:todo_list/state/auth/providers/user_provider.dart';
+import 'package:todo_list/state/tasks/providers/tasks_repository_provider.dart';
+import 'package:todo_list/state/tasks/repositories/tasks_repository_base.dart';
 
 import '../components/popups/confirmation_popup.dart';
-import '../model/tasks/task_model.dart';
+import '../state/tasks/models/task_model.dart';
 import '../navigation/nav_router.dart';
 
 class TaskCreateUpdate extends StatefulWidget {
@@ -20,7 +22,6 @@ class TaskCreateUpdate extends StatefulWidget {
 }
 
 class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
-  late final ITasksRepository _tasksRepository;
   late final TaskModel? _existingTask;
   late final bool _isUpdating;
 
@@ -33,7 +34,6 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
 
   @override
   void initState() {
-    _tasksRepository = TasksRepositoryImpl();
     _existingTask = widget.task;
     _isUpdating = _existingTask != null;
 
@@ -57,7 +57,11 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
     }
   }
 
-  _handleSave(BuildContext context) async {
+  _handleSave({
+    required BuildContext context,
+    required String userId,
+    required TasksRepositoryBase repository,
+  }) async {
     if (_name.text.isEmpty) {
       setState(() {
         _nameError = "Name can't be left empty";
@@ -70,9 +74,9 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
       _existingTask!.done = _done;
       _existingTask!.due = _due;
 
-      var updated = await _tasksRepository.updateTask(_existingTask!);
+      var updated = await repository.updateTask(_existingTask!);
       if (updated) {
-        NavRouter.instance.toTasks(context);
+        NavRouter.instance().toTasks(context);
       }
     } else {
       var newTask = TaskModel(
@@ -84,18 +88,24 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
         created: DateTime.now(),
         due: _due,
       );
-      var created = await _tasksRepository.addTask(newTask);
+      var created = await repository.addTask(
+        userId: userId,
+        task: newTask,
+      );
       if (created) {
-        NavRouter.instance.toTasks(context);
+        NavRouter.instance().toTasks(context);
       }
     }
   }
 
-  _deleteTask(BuildContext context) async {
+  _deleteTask({
+    required BuildContext context,
+    required TasksRepositoryBase repository,
+  }) async {
     if (_isUpdating) {
-      var deleted = await _tasksRepository.deleteTask(_existingTask!);
+      var deleted = await repository.deleteTask(_existingTask!);
       if (deleted) {
-        NavRouter.instance.toTasks(context);
+        NavRouter.instance().toTasks(context);
       }
     }
   }
@@ -114,30 +124,39 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () {
-            NavRouter.instance.returnBack(context);
+            NavRouter.instance().returnBack(context);
           },
         ),
         actions: [
           Visibility(
             visible: _isUpdating,
-            child: IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => ConfirmationPopup(
-                    title: "Delete task",
-                    message:
-                        "Are you sure you want to delete this task? This acction can't be undone.",
-                    onConfirm: () {
-                      _deleteTask(context);
-                    },
+            child: Consumer(
+              builder: (context, ref, child) {
+                final tasksRepository = ref.watch(tasksRepositoryProvider);
+
+                return IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => ConfirmationPopup(
+                        title: "Delete task",
+                        message:
+                            "Are you sure you want to delete this task? This acction can't be undone.",
+                        onConfirm: () {
+                          _deleteTask(
+                            context: context,
+                            repository: tasksRepository,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                  icon: Icon(
+                    Icons.delete_rounded,
+                    color: Theme.of(context).colorScheme.onSecondary,
                   ),
                 );
               },
-              icon: Icon(
-                Icons.delete_rounded,
-                color: Theme.of(context).colorScheme.onSecondary,
-              ),
             ),
           ),
         ],
@@ -189,11 +208,25 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  RoundedPushButton(
-                    text: "Save",
-                    icon: Icons.save_alt_rounded,
-                    onClick: () {
-                      _handleSave(context);
+                  Consumer(
+                    builder: (context, ref, child) {
+                      final tasksRepository =
+                          ref.watch(tasksRepositoryProvider);
+                      final loggedInUser = ref.watch(userProvider);
+
+                      return RoundedPushButton(
+                        text: "Save",
+                        icon: Icons.save_alt_rounded,
+                        onClick: () {
+                          if (loggedInUser != null) {
+                            _handleSave(
+                              context: context,
+                              userId: loggedInUser.uuid,
+                              repository: tasksRepository,
+                            );
+                          }
+                        },
+                      );
                     },
                   ),
                 ],

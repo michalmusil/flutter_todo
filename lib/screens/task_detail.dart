@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/decorative/item_detail.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/components/popups/confirmation_popup.dart';
-import 'package:todo_list/model/repositories/itasks_repository.dart';
-import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
+import 'package:todo_list/state/tasks/providers/tasks_repository_provider.dart';
+import 'package:todo_list/state/tasks/repositories/tasks_repository_base.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
 
-import '../model/tasks/task_model.dart';
+import '../state/tasks/models/task_model.dart';
 
 class TaskDetail extends StatefulWidget {
   const TaskDetail({
@@ -22,20 +23,21 @@ class TaskDetail extends StatefulWidget {
 }
 
 class _TaskDetailState extends State<TaskDetail> {
-  late ITasksRepository _tasksRepository;
   late TaskModel _task;
 
   @override
   void initState() {
     _task = widget.task;
-    _tasksRepository = TasksRepositoryImpl();
     super.initState();
   }
 
-  _deleteTask(BuildContext context) async {
-    var deleted = await _tasksRepository.deleteTask(_task);
+  _deleteTask({
+    required BuildContext context,
+    required TasksRepositoryBase repository,
+  }) async {
+    var deleted = await repository.deleteTask(_task);
     if (deleted) {
-      NavRouter.instance.toTasks(context);
+      NavRouter.instance().toTasks(context);
     }
   }
 
@@ -53,28 +55,38 @@ class _TaskDetailState extends State<TaskDetail> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_rounded),
           onPressed: () {
-            NavRouter.instance.returnBack(context);
+            NavRouter.instance().returnBack(context);
           },
         ),
         actions: [
-          IconButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (_) => ConfirmationPopup(
-                    title: "Delete task",
-                    message:
-                        "Are you sure you want to delete this task? This acction can't be undone.",
-                    onConfirm: () {
-                      _deleteTask(context);
-                    },
-                  ),
-                );
-              },
-              icon: Icon(
-                Icons.delete_rounded,
-                color: Theme.of(context).colorScheme.onSecondary,
-              ))
+          Consumer(
+            builder: (context, ref, child) {
+              final tasksRepository = ref.watch(tasksRepositoryProvider);
+
+              return IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => ConfirmationPopup(
+                      title: "Delete task",
+                      message:
+                          "Are you sure you want to delete this task? This acction can't be undone.",
+                      onConfirm: () {
+                        _deleteTask(
+                          context: context,
+                          repository: tasksRepository,
+                        );
+                      },
+                    ),
+                  );
+                },
+                icon: Icon(
+                  Icons.delete_rounded,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                ),
+              );
+            },
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -140,8 +152,10 @@ class _TaskDetailState extends State<TaskDetail> {
                     text: "Edit",
                     icon: Icons.edit,
                     onClick: () {
-                      NavRouter.instance
-                          .toTaskCreateOrUpdate(context, task: _task);
+                      NavRouter.instance().toTaskCreateOrUpdate(
+                        context,
+                        task: _task,
+                      );
                     },
                   ),
                 ],

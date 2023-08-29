@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/list_items/task_list_item.dart';
-import 'package:todo_list/model/repositories/itasks_repository.dart';
-import 'package:todo_list/model/repositories/tasks_repository_impl.dart';
+import 'package:todo_list/state/tasks/providers/task_list_provider.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/state/auth/providers/auth_notifier_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 
 class Tasks extends ConsumerWidget {
-  final ITasksRepository _tasksRepository = TasksRepositoryImpl();
 
-  Tasks({super.key});
+  const Tasks({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,7 +27,7 @@ class Tasks extends ConsumerWidget {
       userProvider,
       (previous, currentUser) {
         if (currentUser == null) {
-          NavRouter.instance.toLogin(context);
+          NavRouter.instance().toLogin(context);
         }
       },
     );
@@ -44,11 +42,9 @@ class Tasks extends ConsumerWidget {
         actions: [
           Consumer(
             builder: (context, ref, child) {
-              final authNotifier = ref.read(authNotifierProvider.notifier);
-
               return TextButton(
                 onPressed: () {
-                  authNotifier.logOut();
+                  ref.read(authNotifierProvider.notifier).logOut();
                 },
                 child: Text(
                   "Logout",
@@ -61,41 +57,60 @@ class Tasks extends ConsumerWidget {
           ),
         ],
       ),
-      body: StreamBuilder(
-        stream: _tasksRepository.tasksStream(),
-        builder: (context, snapshot) {
-          var newList = snapshot.data;
-          if (newList == null) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (newList.isEmpty) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  "You don't have any tasks yet. Add some by clicking the plus button.",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
+      body: Consumer(
+        builder: (context, ref, child) {
+          final tasksStream = ref.watch(taskListProvider);
 
-          return ListView.builder(
-            itemCount: newList.length,
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 16,
-            ),
-            itemBuilder: (context, index) {
-              return TaskListItem(
-                task: newList[index],
-                onClick: () {
-                  NavRouter.instance.toTaskDetail(
-                    context,
-                    task: newList[index],
-                  );
-                },
+          return tasksStream.when(
+            data: (list) {
+              if (list.isEmpty) {
+                // TODO: Implement empty list screen
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      "You don't have any tasks yet. Add some by clicking the plus button.",
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                );
+              } else {
+                return ListView.builder(
+                  itemCount: list.length,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 16,
+                  ),
+                  itemBuilder: (context, index) {
+                    return TaskListItem(
+                      task: list.elementAt(index),
+                      onClick: () {
+                        NavRouter.instance().toTaskDetail(
+                          context,
+                          task: list.elementAt(index),
+                        );
+                      },
+                    );
+                  },
+                );
+              }
+            },
+            error: (error, stackTrace) {
+              // TODO: Implement an error screen
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    "Something went wrong.",
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            },
+            loading: () {
+              // TODO: Implement a loading screen
+              return const Center(
+                child: CircularProgressIndicator(),
               );
             },
           );
@@ -103,7 +118,7 @@ class Tasks extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          NavRouter.instance.toTaskCreateOrUpdate(
+          NavRouter.instance().toTaskCreateOrUpdate(
             context,
             task: null,
           );
