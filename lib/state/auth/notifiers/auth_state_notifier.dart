@@ -13,12 +13,10 @@ class AuthStateNotifier extends StateNotifier<AuthState?> {
   }
 
   // Recovering the user from last session (if not logged out)
-  void _checkLastLoggedInUser() async {
-    Future.delayed(const Duration(milliseconds: 250), () {
-      if (authService.user != null) {
-        state = AuthState.fromUser(authService.user!);
-      }
-    });
+  void _checkLastLoggedInUser() {
+    if (authService.user != null) {
+      state = AuthState.fromUser(authService.user!);
+    }
   }
 
   Future<void> logOut() async {

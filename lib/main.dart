@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/overlay/loading_overlay.dart';
 import 'package:todo_list/navigation/nav_router.dart';
+import 'package:todo_list/screens/splash.dart';
 import 'package:todo_list/state/global/providers/app_loading_provider.dart';
 import 'package:todo_list/themes.dart';
 import 'firebase_options.dart';
@@ -31,18 +33,33 @@ class TodoApplication extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         scaffoldBackgroundColor: lightColorScheme.background,
+        useMaterial3: true,
         brightness: Brightness.light,
         colorScheme: lightColorScheme,
       ),
       darkTheme: ThemeData(
         scaffoldBackgroundColor: darkColorScheme.background,
+        useMaterial3: true,
         brightness: Brightness.dark,
         colorScheme: darkColorScheme,
       ),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       onGenerateRoute: NavRouter.onGenerateRoute,
-      builder: (_, child) {
+      home: const Splash(),
+      builder: (builderContext, child) {
+
+        SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+          statusBarColor: Colors.transparent,
+          statusBarIconBrightness:
+              Theme.of(builderContext).brightness == Brightness.light
+                  ? Brightness.dark
+                  : Brightness.light,
+          statusBarBrightness: Theme.of(builderContext).brightness == Brightness.light
+              ? Brightness.dark
+              : Brightness.light,
+        ));
+
         // Need to return an overlay widget to be able to globally display the loading overlay
         // Child is returned in the overlay entry builder
         return Overlay(

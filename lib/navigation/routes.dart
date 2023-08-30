@@ -1,5 +1,5 @@
 enum Routes {
-  login(route: '/'),
+  login(route: '/login'),
   registration(route: '/register'),
   tasks(route: '/tasks'),
   taskDetail(route: '/task_detail'),

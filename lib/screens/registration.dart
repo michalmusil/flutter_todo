@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/decorative/registration_banner.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
@@ -9,7 +7,6 @@ import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/registration_error_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
-import 'package:todo_list/utils/images.dart';
 import 'package:todo_list/utils/localization_utils.dart';
 
 import '../state/auth/providers/login_error_provider.dart';
@@ -22,16 +19,6 @@ class Registration extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-      statusBarBrightness: Theme.of(context).brightness == Brightness.light
-          ? Brightness.dark
-          : Brightness.light,
-    ));
-
     ref.listen(
       userProvider,
       (previous, currentUser) {
