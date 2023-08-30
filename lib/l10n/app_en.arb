@@ -5,7 +5,7 @@
     "save": "Save",
     "edit": "Edit",
     "delete": "Delete",
-
+    
     "login": "Login",
     "register": "Register",
     "logout": "Logout",
@@ -14,24 +14,30 @@
     
     "email": "E-mail",
     "password": "Password",
-
+    
     "yourTasks": "Your tasks",
     "taskDetail": "Task detail",
     "newTask": "New task",
     "updateTask": "Update task",
+    
+    "allTasks": "All",
+    "dueTasks": "Due",
+    "doneTasks": "Done",
 
     "name": "Name",
     "description": "Description",
     "done": "Done",
     "created": "Created",
     "due": "Due",
-
+    
+    "noTasks": "You don't have any tasks yet. Add some by clicking the plus button.",
+    "noDoneTasks": "You don't currently have any completed.",
+    "noDueTasks": "You don't currently have any tasks to do.",
     "somethingWentWrong": "Something went wrong",
     "userNotFound": "No user found with provided credentials",
     "invalidCredentials": "Invalid credentials",
     "emailTaken": "E-mail already taken",
     "weakPassword": "Password too weak",
-    "noTasks": "You don't have any tasks yet. Add some by clicking the plus button.",
     "noDateSelected": "No date selected",
     "nameCantBeEmpty": "Name can not be empty",
     "deleteTask": "Delete task",

@@ -5,7 +5,7 @@
     "save": "Uložit",
     "edit": "Upravit",
     "delete": "Odstranit",
-
+    
     "login": "Přihlásit se",
     "register": "Registrovat se",
     "logout": "Odhlásit",
@@ -14,26 +14,32 @@
     
     "email": "E-mail",
     "password": "Heslo",
-
+    
     "yourTasks": "Vaše úkoly",
     "taskDetail": "Detail úkolu",
     "newTask": "Nový úkol",
     "updateTask": "Upravit úkol",
-
-    "name": "Jméno",
+    
+    "allTasks": "Vše",
+    "dueTasks": "Nadcházející",
+    "doneTasks": "Hotovo",
+    
+    "name": "Název",
     "description": "Popis",
     "done": "Hotovo",
     "created": "Vytvořeno",
     "due": "Termín",
 
+    "noTasks": "Zatím nemáte žádné úkoly. Úkol vytvořte kliknutím na tlačítko \"+\"",
+    "noDoneTasks": "Momentálně nemáte žádné dokončené úkoly.",
+    "noDueTasks": "Momentálně na vás nečekájí žádné úkoly.",
     "somethingWentWrong": "Něco se pokazilo",
     "userNotFound": "Uživatel se zadanými údaji nebyl nalezen",
     "invalidCredentials": "Neplatné údaje",
     "emailTaken": "E-mail již někdo používá",
     "weakPassword": "Heslo příliš slabé",
-    "noTasks": "Zatím nemáte žádné úkoly. Úkol vytvořte kliknutím na tlačítko \"+\"",
     "noDateSelected": "Datum nezvoleno",
-    "nameCantBeEmpty": "Jméno nesmí zůstat prázdné",
+    "nameCantBeEmpty": "Název nesmí zůstat prázdný",
     "deleteTask": "Odstranit úkol",
     "sureToDeleteTask": "Určitě si přejete odstranit tento úkol? Tuto akci nemůžete později vzít zpět."
 }

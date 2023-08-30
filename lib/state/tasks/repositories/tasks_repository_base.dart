@@ -1,12 +1,11 @@
 import '../models/task_model.dart';
 
 abstract class TasksRepositoryBase {
-  Stream<Iterable<TaskModel>> tasksStream({required String userId});
+  // If done is null, all tasks are fetched
+  Stream<Iterable<TaskModel>> tasksStream({required String userId, bool? done});
+  Future<Iterable<TaskModel>> tasksStatic({required String userId, bool? done});
 
   Stream<TaskModel?> taskStream({required String userId, required String taskId});
-
-  Future<Iterable<TaskModel>> tasksStatic({required String userId});
-
   Future<TaskModel?> taskStatic({required String userId, required String taskId});
 
   Future<bool> addTask({required String userId, required TaskModel task});
