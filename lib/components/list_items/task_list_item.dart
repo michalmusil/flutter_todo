@@ -34,12 +34,7 @@ class _TaskListItemState extends State<TaskListItem> {
     _isChecked = widget.task.done;
     super.didUpdateWidget(oldWidget);
   }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+  
   _onCompletedChanged({
     required bool newValue,
     required TasksRepositoryBase repository,

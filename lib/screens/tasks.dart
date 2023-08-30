@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/list_items/task_list_item.dart';
 import 'package:todo_list/state/tasks/providers/task_list_provider.dart';
 import 'package:todo_list/navigation/nav_router.dart';
-import 'package:todo_list/state/auth/providers/auth_notifier_provider.dart';
+import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 
 class Tasks extends ConsumerWidget {
@@ -44,7 +44,7 @@ class Tasks extends ConsumerWidget {
             builder: (context, ref, child) {
               return TextButton(
                 onPressed: () {
-                  ref.read(authNotifierProvider.notifier).logOut();
+                  ref.read(authStateProvider.notifier).logOut();
                 },
                 child: Text(
                   "Logout",

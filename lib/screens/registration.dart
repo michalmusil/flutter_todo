@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/navigation/nav_router.dart';
-import 'package:todo_list/state/auth/providers/auth_notifier_provider.dart';
+import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/registration_error_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 import 'package:todo_list/utils/images.dart';
@@ -116,7 +116,7 @@ class Registration extends ConsumerWidget {
                 Consumer(
                   builder: (context, ref, child) {
                     final authNotifier =
-                        ref.watch(authNotifierProvider.notifier);
+                        ref.watch(authStateProvider.notifier);
 
                     return RoundedPushButton(
                       text: "Register",

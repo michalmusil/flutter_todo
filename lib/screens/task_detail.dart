@@ -3,46 +3,46 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/components/decorative/item_detail.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/components/popups/confirmation_popup.dart';
-import 'package:todo_list/state/tasks/providers/tasks_repository_provider.dart';
-import 'package:todo_list/state/tasks/repositories/tasks_repository_base.dart';
+import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
 
 import '../state/tasks/models/task_model.dart';
 
-class TaskDetail extends StatefulWidget {
+class TaskDetail extends ConsumerWidget {
+  final TaskModel task;
+
   const TaskDetail({
     super.key,
     required this.task,
   });
 
-  final TaskModel task;
-
-  @override
-  State<TaskDetail> createState() => _TaskDetailState();
-}
-
-class _TaskDetailState extends State<TaskDetail> {
-  late TaskModel _task;
-
-  @override
-  void initState() {
-    _task = widget.task;
-    super.initState();
+  Widget get checkmark {
+    return Row(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.green,
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: const Padding(
+            padding: EdgeInsets.all(2.0),
+            child: Icon(
+              Icons.check,
+              color: Colors.white,
+              size: 18,
+            ),
+          ),
+        ),
+        const SizedBox(
+          width: 7,
+        )
+      ],
+    );
   }
 
-  _deleteTask({
-    required BuildContext context,
-    required TasksRepositoryBase repository,
-  }) async {
-    var deleted = await repository.deleteTask(_task);
-    if (deleted) {
-      NavRouter.instance().toTasks(context);
-    }
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -61,8 +61,6 @@ class _TaskDetailState extends State<TaskDetail> {
         actions: [
           Consumer(
             builder: (context, ref, child) {
-              final tasksRepository = ref.watch(tasksRepositoryProvider);
-
               return IconButton(
                 onPressed: () {
                   showDialog(
@@ -71,11 +69,15 @@ class _TaskDetailState extends State<TaskDetail> {
                       title: "Delete task",
                       message:
                           "Are you sure you want to delete this task? This acction can't be undone.",
-                      onConfirm: () {
-                        _deleteTask(
-                          context: context,
-                          repository: tasksRepository,
-                        );
+                      onConfirm: () async {
+                        final taskRepoStateNotifier = ref.read(taskRepoStateProvider.notifier);
+                        await taskRepoStateNotifier
+                            .deleteTask(
+                              task: task,
+                            )
+                            .then((_) {
+                              NavRouter.instance().returnBack(context);
+                            });
                       },
                     ),
                   );
@@ -100,10 +102,10 @@ class _TaskDetailState extends State<TaskDetail> {
             children: [
               Row(
                 children: [
-                  if (_task.done == true) checkmark,
+                  if (task.done == true) checkmark,
                   Expanded(
                     child: Text(
-                      _task.name,
+                      task.name,
                       style: Theme.of(context).textTheme.titleLarge,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -114,11 +116,11 @@ class _TaskDetailState extends State<TaskDetail> {
               const SizedBox(
                 height: 10.0,
               ),
-              if (_task.description != null)
+              if (task.description != null)
                 Column(
                   children: [
                     Text(
-                      _task.description!,
+                      task.description!,
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(
@@ -129,16 +131,16 @@ class _TaskDetailState extends State<TaskDetail> {
               ItemDetail(
                   label: "Created",
                   values: [
-                    DateTimeUtils.getDateString(_task.created),
-                    DateTimeUtils.getTimeString(_task.created),
+                    DateTimeUtils.getDateString(task.created),
+                    DateTimeUtils.getTimeString(task.created),
                   ],
                   icon: Icons.calendar_month_rounded),
-              if (_task.due != null)
+              if (task.due != null)
                 ItemDetail(
                   label: "Due",
                   values: [
-                    DateTimeUtils.getDateString(_task.due!),
-                    DateTimeUtils.getTimeString(_task.due!),
+                    DateTimeUtils.getDateString(task.due!),
+                    DateTimeUtils.getTimeString(task.due!),
                   ],
                   icon: Icons.timelapse_rounded,
                 ),
@@ -154,7 +156,7 @@ class _TaskDetailState extends State<TaskDetail> {
                     onClick: () {
                       NavRouter.instance().toTaskCreateOrUpdate(
                         context,
-                        task: _task,
+                        task: task,
                       );
                     },
                   ),
@@ -164,30 +166,6 @@ class _TaskDetailState extends State<TaskDetail> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget get checkmark {
-    return Row(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.green,
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: const Padding(
-            padding: EdgeInsets.all(2.0),
-            child: Icon(
-              Icons.check,
-              color: Colors.white,
-              size: 18,
-            ),
-          ),
-        ),
-        const SizedBox(
-          width: 7,
-        )
-      ],
     );
   }
 }

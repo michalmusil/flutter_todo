@@ -5,8 +5,8 @@ import 'package:todo_list/components/forms/custom_switch.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
-import 'package:todo_list/state/tasks/providers/tasks_repository_provider.dart';
-import 'package:todo_list/state/tasks/repositories/tasks_repository_base.dart';
+import 'package:todo_list/state/tasks/notifiers/task_repo_notifier.dart';
+import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
 
 import '../components/popups/confirmation_popup.dart';
 import '../state/tasks/models/task_model.dart';
@@ -60,7 +60,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
   _handleSave({
     required BuildContext context,
     required String userId,
-    required TasksRepositoryBase repository,
+    required TaskRepoNotifier repositoryNotifier,
   }) async {
     if (_name.text.isEmpty) {
       setState(() {
@@ -74,10 +74,18 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
       _existingTask!.done = _done;
       _existingTask!.due = _due;
 
-      var updated = await repository.updateTask(_existingTask!);
-      if (updated) {
-        NavRouter.instance().toTasks(context);
-      }
+      final newValues = _existingTask!.copyWith(
+        name: _name.text,
+        description: _description.text,
+        done: _done,
+        due: _due,
+      );
+
+      await repositoryNotifier.updateTask(task: newValues).then(
+        (_) {
+          NavRouter.instance().toTasks(context);
+        },
+      );
     } else {
       var newTask = TaskModel(
         id: '',
@@ -88,25 +96,9 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
         created: DateTime.now(),
         due: _due,
       );
-      var created = await repository.addTask(
-        userId: userId,
-        task: newTask,
-      );
-      if (created) {
+      await repositoryNotifier.addTask(userId: userId, task: newTask).then((_) {
         NavRouter.instance().toTasks(context);
-      }
-    }
-  }
-
-  _deleteTask({
-    required BuildContext context,
-    required TasksRepositoryBase repository,
-  }) async {
-    if (_isUpdating) {
-      var deleted = await repository.deleteTask(_existingTask!);
-      if (deleted) {
-        NavRouter.instance().toTasks(context);
-      }
+      });
     }
   }
 
@@ -132,7 +124,8 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
             visible: _isUpdating,
             child: Consumer(
               builder: (context, ref, child) {
-                final tasksRepository = ref.watch(tasksRepositoryProvider);
+                final taskRepoNotifier =
+                    ref.watch(taskRepoStateProvider.notifier);
 
                 return IconButton(
                   onPressed: () {
@@ -142,11 +135,12 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                         title: "Delete task",
                         message:
                             "Are you sure you want to delete this task? This acction can't be undone.",
-                        onConfirm: () {
-                          _deleteTask(
-                            context: context,
-                            repository: tasksRepository,
-                          );
+                        onConfirm: () async {
+                          await taskRepoNotifier
+                              .deleteTask(task: _existingTask!)
+                              .then((_) {
+                            NavRouter.instance().toTasks(context);
+                          });
                         },
                       ),
                     );
@@ -210,8 +204,6 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                 children: [
                   Consumer(
                     builder: (context, ref, child) {
-                      final tasksRepository =
-                          ref.watch(tasksRepositoryProvider);
                       final loggedInUser = ref.watch(userProvider);
 
                       return RoundedPushButton(
@@ -222,7 +214,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                             _handleSave(
                               context: context,
                               userId: loggedInUser.uuid,
-                              repository: tasksRepository,
+                              repositoryNotifier: ref.read(taskRepoStateProvider.notifier),
                             );
                           }
                         },

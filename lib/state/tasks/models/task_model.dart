@@ -51,6 +51,23 @@ class TaskModel {
     }
   }
 
+  TaskModel copyWith({
+    String? name,
+    String? description,
+    bool? done,
+    DateTime? due,
+  }) {
+    return TaskModel(
+      id: id,
+      userId: userId,
+      created: created,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      done: done ?? this.done,
+      due: due ?? this.due,
+    );
+  }
+
   static final List<TaskModel> mockData = [
     TaskModel(
       id: "asdfasdfasdf",

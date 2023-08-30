@@ -5,10 +5,10 @@ import 'package:todo_list/state/auth/models/auth_state.dart';
 
 import '../models/auth_exception.dart';
 
-class AuthNotifier extends StateNotifier<AuthState?> {
+class AuthStateNotifier extends StateNotifier<AuthState?> {
   final AuthServiceBase authService = const AuthService();
 
-  AuthNotifier() : super(null) {
+  AuthStateNotifier() : super(null) {
     _checkLastLoggedInUser();
   }
 
@@ -22,6 +22,7 @@ class AuthNotifier extends StateNotifier<AuthState?> {
   }
 
   Future<void> logOut() async {
+    state = AuthState.loading();
     await authService.logOut();
     state = null;
   }
@@ -30,6 +31,7 @@ class AuthNotifier extends StateNotifier<AuthState?> {
     required String email,
     required String password,
   }) async {
+    state = AuthState.loading();
     try {
       final user = await authService.logIn(email: email, password: password);
       state = AuthState.fromUser(user);
@@ -47,6 +49,7 @@ class AuthNotifier extends StateNotifier<AuthState?> {
     required String email,
     required String password,
   }) async {
+    state = AuthState.loading();
     try {
       await authService.register(email: email, password: password);
       final loggedInUser =
