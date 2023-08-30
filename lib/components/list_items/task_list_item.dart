@@ -4,7 +4,7 @@ import 'package:todo_list/state/tasks/providers/tasks_repository_provider.dart';
 import 'package:todo_list/state/tasks/repositories/tasks_repository_base.dart';
 import 'package:todo_list/state/tasks/models/task_model.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 class TaskListItem extends StatefulWidget {
   final TaskModel task;
@@ -61,7 +61,7 @@ class _TaskListItemState extends State<TaskListItem> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Text(
-          AppLocalizations.of(context)!.delete,
+          strings(context).delete,
           style: TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.bold,

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/components/decorative/loading_banner.dart';
+import 'package:todo_list/components/decorative/no_content_banner.dart';
 import 'package:todo_list/components/list_items/task_list_item.dart';
 import 'package:todo_list/state/tasks/providers/task_list_provider.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 class Tasks extends ConsumerWidget {
   const Tasks({super.key});
@@ -34,7 +36,7 @@ class Tasks extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.yourTasks),
+        title: Text(strings(context).yourTasks),
         automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
@@ -47,7 +49,7 @@ class Tasks extends ConsumerWidget {
                   ref.read(authStateProvider.notifier).logOut();
                 },
                 child: Text(
-                  AppLocalizations.of(context)!.logout,
+                  strings(context).logout,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -64,15 +66,8 @@ class Tasks extends ConsumerWidget {
           return tasksStream.when(
             data: (list) {
               if (list.isEmpty) {
-                // TODO: Implement empty list screen
-                return Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      AppLocalizations.of(context)!.noTasks,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                return NoContentBanner(
+                  text: strings(context).noTasks,
                 );
               } else {
                 return ListView.builder(
@@ -95,22 +90,21 @@ class Tasks extends ConsumerWidget {
                 );
               }
             },
+            loading: () {
+              return LoadingBanner(
+                loadingText: strings(context).loading,
+              );
+            },
             error: (error, stackTrace) {
               // TODO: Implement an error screen
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Text(
-                    AppLocalizations.of(context)!.somethingWentWrong,
+                    strings(context).somethingWentWrong,
                     textAlign: TextAlign.center,
                   ),
                 ),
-              );
-            },
-            loading: () {
-              // TODO: Implement a loading screen
-              return const Center(
-                child: CircularProgressIndicator(),
               );
             },
           );

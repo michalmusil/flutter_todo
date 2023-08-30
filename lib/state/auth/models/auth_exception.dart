@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 class AuthException {
   String get message => "Something went wrong";
 
   String getLocalizedMessage(BuildContext context){
-    return AppLocalizations.of(context)!.somethingWentWrong;
+    return strings(context).somethingWentWrong;
   }
 }
 
@@ -15,7 +15,7 @@ class UserNotFoundException implements AuthException {
   
   @override
   String getLocalizedMessage(BuildContext context) {
-    return AppLocalizations.of(context)!.userNotFound;
+    return strings(context).userNotFound;
   }
 
 }
@@ -25,7 +25,7 @@ class InvalidCredentialsException implements AuthException {
   
   @override
   String getLocalizedMessage(BuildContext context) {
-    return AppLocalizations.of(context)!.invalidCredentials;
+    return strings(context).invalidCredentials;
   }
 }
 
@@ -35,7 +35,7 @@ class EmailAlreadyInUseException implements AuthException {
   
   @override
   String getLocalizedMessage(BuildContext context) {
-    return AppLocalizations.of(context)!.emailTaken;
+    return strings(context).emailTaken;
   }
 }
 
@@ -45,6 +45,6 @@ class WeakPasswordException implements AuthException {
   
   @override
   String getLocalizedMessage(BuildContext context) {
-    return AppLocalizations.of(context)!.weakPassword;
+    return strings(context).weakPassword;
   }
 }

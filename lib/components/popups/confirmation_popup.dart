@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 class ConfirmationPopup extends StatelessWidget {
   final String title;
@@ -32,7 +32,7 @@ class ConfirmationPopup extends StatelessWidget {
       ),
       actions: [
         RoundedPushButton(
-          text: AppLocalizations.of(context)!.no,
+          text: strings(context).no,
           backgroundColor: Theme.of(context).colorScheme.surface,
           foregroundColor: Theme.of(context).colorScheme.onSurface,
           onClick: () {
@@ -43,7 +43,7 @@ class ConfirmationPopup extends StatelessWidget {
           },
         ),
         RoundedPushButton(
-          text: AppLocalizations.of(context)!.yes,
+          text: strings(context).yes,
           onClick: () {
             Navigator.pop(context);
             onConfirm();

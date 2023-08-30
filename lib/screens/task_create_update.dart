@@ -7,7 +7,7 @@ import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 import 'package:todo_list/state/tasks/notifiers/task_repo_notifier.dart';
 import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 import '../components/popups/confirmation_popup.dart';
 import '../state/tasks/models/task_model.dart';
@@ -65,7 +65,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
   }) async {
     if (_name.text.isEmpty) {
       setState(() {
-        _nameError = AppLocalizations.of(context)!.nameCantBeEmpty;
+        _nameError = strings(context).nameCantBeEmpty;
       });
       return;
     }
@@ -112,8 +112,8 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
         elevation: 0,
         title: Text(
           (_isUpdating == true
-              ? AppLocalizations.of(context)!.updateTask
-              : AppLocalizations.of(context)!.newTask),
+              ? strings(context).updateTask
+              : strings(context).newTask),
           overflow: TextOverflow.ellipsis,
         ),
         leading: IconButton(
@@ -135,9 +135,9 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                     showDialog(
                       context: context,
                       builder: (_) => ConfirmationPopup(
-                        title: AppLocalizations.of(context)!.deleteTask,
+                        title: strings(context).deleteTask,
                         message:
-                            AppLocalizations.of(context)!.sureToDeleteTask,
+                            strings(context).sureToDeleteTask,
                         onConfirm: () async {
                           await taskRepoNotifier
                               .deleteTask(task: _existingTask!)
@@ -168,15 +168,15 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
             children: [
               CustomTextInput(
                 controller: _name,
-                hint: AppLocalizations.of(context)!.name,
-                label: AppLocalizations.of(context)!.name,
+                hint: strings(context).name,
+                label: strings(context).name,
                 allowClearButton: false,
                 errorText: _nameError,
               ),
               CustomTextInput(
                 controller: _description,
-                hint: AppLocalizations.of(context)!.description,
-                label: AppLocalizations.of(context)!.description,
+                hint: strings(context).description,
+                label: strings(context).description,
                 allowClearButton: false,
                 keyboardType: TextInputType.multiline,
                 maxLines: 5,
@@ -188,10 +188,10 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                     _done = value;
                   });
                 },
-                label: AppLocalizations.of(context)!.done,
+                label: strings(context).done,
               ),
               CustomDatePicker(
-                label: AppLocalizations.of(context)!.due,
+                label: strings(context).due,
                 initialDate: _due,
                 onDatePicked: (newDate) {
                   setState(() {
@@ -210,7 +210,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                       final loggedInUser = ref.watch(userProvider);
 
                       return RoundedPushButton(
-                        text: AppLocalizations.of(context)!.save,
+                        text: strings(context).save,
                         icon: Icons.save_alt_rounded,
                         onClick: () {
                           if (loggedInUser != null) {

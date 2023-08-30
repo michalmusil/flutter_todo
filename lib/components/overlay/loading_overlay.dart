@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/components/decorative/loading_banner.dart';
 import 'package:todo_list/components/overlay/overlay_controller.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 class LoadingOverlay {
   OverlayController? _controller;
@@ -34,27 +35,10 @@ class LoadingOverlay {
     return OverlayEntry(
       builder: (context) {
         return Material(
-          color: Colors.black.withAlpha(10),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                CircularProgressIndicator(
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  AppLocalizations.of(context)!.loading,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                )
-              ],
-            ),
-          ),
-        );
+            color: Colors.black.withAlpha(150),
+            child: LoadingBanner(
+              loadingText: strings(context).loading,
+            ));
       },
     );
   }

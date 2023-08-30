@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/components/decorative/registration_banner.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/navigation/nav_router.dart';
@@ -9,7 +10,7 @@ import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/registration_error_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 import 'package:todo_list/utils/images.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 import '../state/auth/providers/login_error_provider.dart';
 
@@ -52,24 +53,7 @@ class Registration extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SvgPicture.asset(
-                  Images.appIcon.url,
-                  width: 130,
-                  height: 130,
-                ),
-                const SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  AppLocalizations.of(context)!.register,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontFamily:
-                        Theme.of(context).textTheme.titleLarge!.fontFamily,
-                    fontSize: Theme.of(context).textTheme.titleLarge!.fontSize,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                const RegistrationBanner(),
                 const SizedBox(
                   height: 30,
                 ),
@@ -78,8 +62,8 @@ class Registration extends ConsumerWidget {
                     return CustomTextInput(
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
-                      hint: AppLocalizations.of(context)!.email,
-                      label: AppLocalizations.of(context)!.email,
+                      hint: strings(context).email,
+                      label: strings(context).email,
                       onTap: () {
                         ref.read(registrationErrorProvider.notifier).state =
                             null;
@@ -101,8 +85,8 @@ class Registration extends ConsumerWidget {
                     return CustomTextInput(
                       controller: _password,
                       obscureText: true,
-                      hint: AppLocalizations.of(context)!.password,
-                      label: AppLocalizations.of(context)!.password,
+                      hint: strings(context).password,
+                      label: strings(context).password,
                       errorText:
                           errorGetter != null ? errorGetter(context) : null,
                       onTap: () {
@@ -120,7 +104,7 @@ class Registration extends ConsumerWidget {
                     final authNotifier = ref.watch(authStateProvider.notifier);
 
                     return RoundedPushButton(
-                      text: AppLocalizations.of(context)!.register,
+                      text: strings(context).register,
                       icon: Icons.person,
                       onClick: () {
                         final email = _email.text;
@@ -142,7 +126,7 @@ class Registration extends ConsumerWidget {
                       NavRouter.instance().toLogin(context);
                     },
                     child: Text(
-                      AppLocalizations.of(context)!.goToLogin,
+                      strings(context).goToLogin,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),

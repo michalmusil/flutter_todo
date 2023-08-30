@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 class CustomDatePicker extends StatefulWidget {
   final String label;
@@ -119,7 +119,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                       )
                     else
                       Text(
-                        AppLocalizations.of(context)!.noDateSelected,
+                        strings(context).noDateSelected,
                         style: Theme.of(context).textTheme.labelMedium,
                       )
                   ],

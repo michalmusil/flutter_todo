@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/components/decorative/item_detail.dart';
+import 'package:todo_list/components/content/item_detail.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/components/popups/confirmation_popup.dart';
 import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:todo_list/utils/localization_utils.dart';
 
 import '../state/tasks/models/task_model.dart';
 
@@ -50,7 +50,7 @@ class TaskDetail extends ConsumerWidget {
         foregroundColor: Theme.of(context).colorScheme.onBackground,
         elevation: 0,
         title: Text(
-          AppLocalizations.of(context)!.taskDetail,
+          strings(context).taskDetail,
           overflow: TextOverflow.ellipsis,
         ),
         leading: IconButton(
@@ -67,9 +67,9 @@ class TaskDetail extends ConsumerWidget {
                   showDialog(
                     context: context,
                     builder: (_) => ConfirmationPopup(
-                      title: AppLocalizations.of(context)!.deleteTask,
+                      title: strings(context).deleteTask,
                       message:
-                          AppLocalizations.of(context)!.sureToDeleteTask,
+                          strings(context).sureToDeleteTask,
                       onConfirm: () async {
                         final taskRepoStateNotifier = ref.read(taskRepoStateProvider.notifier);
                         await taskRepoStateNotifier
@@ -130,7 +130,7 @@ class TaskDetail extends ConsumerWidget {
                   ],
                 ),
               ItemDetail(
-                  label: AppLocalizations.of(context)!.created,
+                  label: strings(context).created,
                   values: [
                     DateTimeUtils.getDateString(task.created),
                     DateTimeUtils.getTimeString(task.created),
@@ -138,7 +138,7 @@ class TaskDetail extends ConsumerWidget {
                   icon: Icons.calendar_month_rounded),
               if (task.due != null)
                 ItemDetail(
-                  label: AppLocalizations.of(context)!.due,
+                  label: strings(context).due,
                   values: [
                     DateTimeUtils.getDateString(task.due!),
                     DateTimeUtils.getTimeString(task.due!),
@@ -152,7 +152,7 @@ class TaskDetail extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   RoundedPushButton(
-                    text: AppLocalizations.of(context)!.edit,
+                    text: strings(context).edit,
                     icon: Icons.edit,
                     onClick: () {
                       NavRouter.instance().toTaskCreateOrUpdate(
