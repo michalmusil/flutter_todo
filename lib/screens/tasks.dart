@@ -6,6 +6,7 @@ import 'package:todo_list/state/tasks/providers/task_list_provider.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Tasks extends ConsumerWidget {
   const Tasks({super.key});
@@ -33,7 +34,7 @@ class Tasks extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Your tasks'),
+        title: Text(AppLocalizations.of(context)!.yourTasks),
         automaticallyImplyLeading: false,
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
@@ -46,7 +47,7 @@ class Tasks extends ConsumerWidget {
                   ref.read(authStateProvider.notifier).logOut();
                 },
                 child: Text(
-                  "Logout",
+                  AppLocalizations.of(context)!.logout,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -64,11 +65,11 @@ class Tasks extends ConsumerWidget {
             data: (list) {
               if (list.isEmpty) {
                 // TODO: Implement empty list screen
-                return const Center(
+                return Center(
                   child: Padding(
-                    padding: EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(16),
                     child: Text(
-                      "You don't have any tasks yet. Add some by clicking the plus button.",
+                      AppLocalizations.of(context)!.noTasks,
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -96,11 +97,11 @@ class Tasks extends ConsumerWidget {
             },
             error: (error, stackTrace) {
               // TODO: Implement an error screen
-              return const Center(
+              return Center(
                 child: Padding(
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Text(
-                    "Something went wrong.",
+                    AppLocalizations.of(context)!.somethingWentWrong,
                     textAlign: TextAlign.center,
                   ),
                 ),

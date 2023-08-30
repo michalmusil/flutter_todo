@@ -6,6 +6,7 @@ import 'package:todo_list/components/popups/confirmation_popup.dart';
 import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
 import 'package:todo_list/navigation/nav_router.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../state/tasks/models/task_model.dart';
 
@@ -48,8 +49,8 @@ class TaskDetail extends ConsumerWidget {
         backgroundColor: Theme.of(context).colorScheme.background,
         foregroundColor: Theme.of(context).colorScheme.onBackground,
         elevation: 0,
-        title: const Text(
-          "Task detail",
+        title: Text(
+          AppLocalizations.of(context)!.taskDetail,
           overflow: TextOverflow.ellipsis,
         ),
         leading: IconButton(
@@ -66,9 +67,9 @@ class TaskDetail extends ConsumerWidget {
                   showDialog(
                     context: context,
                     builder: (_) => ConfirmationPopup(
-                      title: "Delete task",
+                      title: AppLocalizations.of(context)!.deleteTask,
                       message:
-                          "Are you sure you want to delete this task? This acction can't be undone.",
+                          AppLocalizations.of(context)!.sureToDeleteTask,
                       onConfirm: () async {
                         final taskRepoStateNotifier = ref.read(taskRepoStateProvider.notifier);
                         await taskRepoStateNotifier
@@ -84,7 +85,7 @@ class TaskDetail extends ConsumerWidget {
                 },
                 icon: Icon(
                   Icons.delete_rounded,
-                  color: Theme.of(context).colorScheme.onSecondary,
+                  color: Theme.of(context).colorScheme.onBackground,
                 ),
               );
             },
@@ -129,7 +130,7 @@ class TaskDetail extends ConsumerWidget {
                   ],
                 ),
               ItemDetail(
-                  label: "Created",
+                  label: AppLocalizations.of(context)!.created,
                   values: [
                     DateTimeUtils.getDateString(task.created),
                     DateTimeUtils.getTimeString(task.created),
@@ -137,7 +138,7 @@ class TaskDetail extends ConsumerWidget {
                   icon: Icons.calendar_month_rounded),
               if (task.due != null)
                 ItemDetail(
-                  label: "Due",
+                  label: AppLocalizations.of(context)!.due,
                   values: [
                     DateTimeUtils.getDateString(task.due!),
                     DateTimeUtils.getTimeString(task.due!),
@@ -151,7 +152,7 @@ class TaskDetail extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   RoundedPushButton(
-                    text: "Edit",
+                    text: AppLocalizations.of(context)!.edit,
                     icon: Icons.edit,
                     onClick: () {
                       NavRouter.instance().toTaskCreateOrUpdate(

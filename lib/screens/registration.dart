@@ -9,6 +9,7 @@ import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/registration_error_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 import 'package:todo_list/utils/images.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../state/auth/providers/login_error_provider.dart';
 
@@ -60,7 +61,7 @@ class Registration extends ConsumerWidget {
                   height: 15,
                 ),
                 Text(
-                  "Register",
+                  AppLocalizations.of(context)!.register,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontFamily:
@@ -77,8 +78,8 @@ class Registration extends ConsumerWidget {
                     return CustomTextInput(
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
-                      hint: 'E-mail',
-                      label: 'E-mail',
+                      hint: AppLocalizations.of(context)!.email,
+                      label: AppLocalizations.of(context)!.email,
                       onTap: () {
                         ref.read(registrationErrorProvider.notifier).state =
                             null;
@@ -88,7 +89,7 @@ class Registration extends ConsumerWidget {
                 ),
                 Consumer(
                   builder: (context, ref, child) {
-                    final errorMessage = ref.watch(registrationErrorProvider);
+                    final errorGetter = ref.watch(registrationErrorProvider);
                     ref.listen(
                       registrationErrorProvider,
                       (previous, errorText) {
@@ -100,9 +101,10 @@ class Registration extends ConsumerWidget {
                     return CustomTextInput(
                       controller: _password,
                       obscureText: true,
-                      hint: 'Password',
-                      label: 'Password',
-                      errorText: errorMessage,
+                      hint: AppLocalizations.of(context)!.password,
+                      label: AppLocalizations.of(context)!.password,
+                      errorText:
+                          errorGetter != null ? errorGetter(context) : null,
                       onTap: () {
                         ref.read(registrationErrorProvider.notifier).state =
                             null;
@@ -115,11 +117,10 @@ class Registration extends ConsumerWidget {
                 ),
                 Consumer(
                   builder: (context, ref, child) {
-                    final authNotifier =
-                        ref.watch(authStateProvider.notifier);
+                    final authNotifier = ref.watch(authStateProvider.notifier);
 
                     return RoundedPushButton(
-                      text: "Register",
+                      text: AppLocalizations.of(context)!.register,
                       icon: Icons.person,
                       onClick: () {
                         final email = _email.text;
@@ -141,7 +142,7 @@ class Registration extends ConsumerWidget {
                       NavRouter.instance().toLogin(context);
                     },
                     child: Text(
-                      'Go to login',
+                      AppLocalizations.of(context)!.goToLogin,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),

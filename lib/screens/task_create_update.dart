@@ -7,6 +7,7 @@ import 'package:todo_list/components/misc/rounded_push_button.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 import 'package:todo_list/state/tasks/notifiers/task_repo_notifier.dart';
 import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../components/popups/confirmation_popup.dart';
 import '../state/tasks/models/task_model.dart';
@@ -64,7 +65,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
   }) async {
     if (_name.text.isEmpty) {
       setState(() {
-        _nameError = "Name can't be left empty";
+        _nameError = AppLocalizations.of(context)!.nameCantBeEmpty;
       });
       return;
     }
@@ -110,7 +111,9 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
         foregroundColor: Theme.of(context).colorScheme.onBackground,
         elevation: 0,
         title: Text(
-          (_isUpdating == true ? "Update task" : "Add task"),
+          (_isUpdating == true
+              ? AppLocalizations.of(context)!.updateTask
+              : AppLocalizations.of(context)!.newTask),
           overflow: TextOverflow.ellipsis,
         ),
         leading: IconButton(
@@ -132,9 +135,9 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                     showDialog(
                       context: context,
                       builder: (_) => ConfirmationPopup(
-                        title: "Delete task",
+                        title: AppLocalizations.of(context)!.deleteTask,
                         message:
-                            "Are you sure you want to delete this task? This acction can't be undone.",
+                            AppLocalizations.of(context)!.sureToDeleteTask,
                         onConfirm: () async {
                           await taskRepoNotifier
                               .deleteTask(task: _existingTask!)
@@ -147,7 +150,7 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                   },
                   icon: Icon(
                     Icons.delete_rounded,
-                    color: Theme.of(context).colorScheme.onSecondary,
+                    color: Theme.of(context).colorScheme.onBackground,
                   ),
                 );
               },
@@ -165,15 +168,15 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
             children: [
               CustomTextInput(
                 controller: _name,
-                hint: 'Name',
-                label: 'Name',
+                hint: AppLocalizations.of(context)!.name,
+                label: AppLocalizations.of(context)!.name,
                 allowClearButton: false,
                 errorText: _nameError,
               ),
               CustomTextInput(
                 controller: _description,
-                hint: 'Description',
-                label: 'Description',
+                hint: AppLocalizations.of(context)!.description,
+                label: AppLocalizations.of(context)!.description,
                 allowClearButton: false,
                 keyboardType: TextInputType.multiline,
                 maxLines: 5,
@@ -185,10 +188,10 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                     _done = value;
                   });
                 },
-                label: "Done",
+                label: AppLocalizations.of(context)!.done,
               ),
               CustomDatePicker(
-                label: "Due",
+                label: AppLocalizations.of(context)!.due,
                 initialDate: _due,
                 onDatePicked: (newDate) {
                   setState(() {
@@ -207,14 +210,15 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                       final loggedInUser = ref.watch(userProvider);
 
                       return RoundedPushButton(
-                        text: "Save",
+                        text: AppLocalizations.of(context)!.save,
                         icon: Icons.save_alt_rounded,
                         onClick: () {
                           if (loggedInUser != null) {
                             _handleSave(
                               context: context,
                               userId: loggedInUser.uuid,
-                              repositoryNotifier: ref.read(taskRepoStateProvider.notifier),
+                              repositoryNotifier:
+                                  ref.read(taskRepoStateProvider.notifier),
                             );
                           }
                         },

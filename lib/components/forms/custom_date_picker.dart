@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomDatePicker extends StatefulWidget {
   final String label;
@@ -62,8 +63,8 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.shadow,
-            blurRadius: 5,
-            spreadRadius: -2,
+            blurRadius: 8,
+            spreadRadius: -1,
           ),
         ],
         borderRadius: BorderRadius.circular(10),
@@ -118,7 +119,7 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                       )
                     else
                       Text(
-                        "No date selected",
+                        AppLocalizations.of(context)!.noDateSelected,
                         style: Theme.of(context).textTheme.labelMedium,
                       )
                   ],

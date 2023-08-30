@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_list/screens/login.dart';
+import 'package:todo_list/screens/registration.dart';
+import 'package:todo_list/screens/task_create_update.dart';
+import 'package:todo_list/screens/task_detail.dart';
+import 'package:todo_list/screens/tasks.dart';
 import 'package:todo_list/state/tasks/models/task_model.dart';
 import 'package:todo_list/navigation/routes.dart';
 
@@ -7,6 +12,21 @@ class NavRouter {
 
   static final _instance = NavRouter._();
   factory NavRouter.instance() => _instance;
+
+  static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
+    final arguments = settings.arguments;
+    final routes = <String, WidgetBuilder>{
+      Routes.login.route: (context) => Login(),
+      Routes.registration.route: (context) => Registration(),
+      Routes.tasks.route: (context) => const Tasks(),
+      Routes.taskDetail.route: (context) =>
+          TaskDetail(task: arguments as TaskModel),
+      Routes.taskCreateOrUpdate.route: (context) =>
+          TaskCreateUpdate(task: arguments as TaskModel?),
+    };
+    final currentBuilder = routes[settings.name]!;
+    return MaterialPageRoute(builder: (ctx) => currentBuilder(ctx));
+  }
 
   void returnBack(BuildContext context) {
     Navigator.pop(context);

@@ -1,0 +1,39 @@
+{
+    "loading": "Loading...",
+    "yes": "Yes",
+    "no": "No",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "goToLogin": "Go to login",
+    "goToRegistration": "Go to registration",
+    
+    "email": "E-mail",
+    "password": "Password",
+
+    "yourTasks": "Your tasks",
+    "taskDetail": "Task detail",
+    "newTask": "New task",
+    "updateTask": "Update task",
+
+    "name": "Name",
+    "description": "Description",
+    "done": "Done",
+    "created": "Created",
+    "due": "Due",
+
+    "somethingWentWrong": "Something went wrong",
+    "userNotFound": "No user found with provided credentials",
+    "invalidCredentials": "Invalid credentials",
+    "emailTaken": "E-mail already taken",
+    "weakPassword": "Password too weak",
+    "noTasks": "You don't have any tasks yet. Add some by clicking the plus button.",
+    "noDateSelected": "No date selected",
+    "nameCantBeEmpty": "Name can not be empty",
+    "deleteTask": "Delete task",
+    "sureToDeleteTask": "Are you sure you want to delete this task? This action can not be undone."
+}

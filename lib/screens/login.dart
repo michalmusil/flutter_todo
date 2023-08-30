@@ -9,6 +9,7 @@ import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/login_error_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 import 'package:todo_list/utils/images.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../state/auth/providers/registration_error_provider.dart';
 
@@ -60,7 +61,7 @@ class Login extends ConsumerWidget {
                   height: 15,
                 ),
                 Text(
-                  "Log in",
+                  AppLocalizations.of(context)!.login,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontFamily:
@@ -77,8 +78,8 @@ class Login extends ConsumerWidget {
                     return CustomTextInput(
                       controller: _email,
                       keyboardType: TextInputType.emailAddress,
-                      hint: 'E-mail',
-                      label: 'E-mail',
+                      hint: AppLocalizations.of(context)!.email,
+                      label: AppLocalizations.of(context)!.email,
                       onTap: () {
                         ref.read(loginErrorProvider.notifier).state = null;
                       },
@@ -87,11 +88,11 @@ class Login extends ConsumerWidget {
                 ),
                 Consumer(
                   builder: (context, ref, child) {
-                    final errorMessage = ref.watch(loginErrorProvider);
+                    final errorGetter = ref.watch(loginErrorProvider);
                     ref.listen(
                       loginErrorProvider,
-                      (previous, errorText) {
-                        if (errorText != null) {
+                      (previous, err) {
+                        if (err != null) {
                           _password.text = "";
                         }
                       },
@@ -100,9 +101,10 @@ class Login extends ConsumerWidget {
                     return CustomTextInput(
                       controller: _password,
                       obscureText: true,
-                      hint: 'Password',
-                      label: 'Password',
-                      errorText: errorMessage,
+                      hint: AppLocalizations.of(context)!.password,
+                      label: AppLocalizations.of(context)!.email,
+                      errorText:
+                          errorGetter != null ? errorGetter(context) : null,
                       onTap: () {
                         ref.read(loginErrorProvider.notifier).state = null;
                       },
@@ -114,11 +116,10 @@ class Login extends ConsumerWidget {
                 ),
                 Consumer(
                   builder: (context, ref, child) {
-                    final authNotifier =
-                        ref.watch(authStateProvider.notifier);
+                    final authNotifier = ref.watch(authStateProvider.notifier);
 
                     return RoundedPushButton(
-                      text: "Log in",
+                      text: AppLocalizations.of(context)!.login,
                       icon: Icons.login_rounded,
                       onClick: () {
                         final email = _email.text;
@@ -139,7 +140,7 @@ class Login extends ConsumerWidget {
                       NavRouter.instance().toRegistration(context);
                     },
                     child: Text(
-                      'Go to registration',
+                      AppLocalizations.of(context)!.goToRegistration,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary),

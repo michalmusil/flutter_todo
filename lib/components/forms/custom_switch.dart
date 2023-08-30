@@ -27,8 +27,8 @@ class _CustomSwitchState extends State<CustomSwitch> {
         boxShadow: [
           BoxShadow(
             color: Theme.of(context).colorScheme.shadow,
-            blurRadius: 5,
-            spreadRadius: -2,
+            blurRadius: 8,
+            spreadRadius: -1,
           ),
         ],
         color: Theme.of(context).colorScheme.surface,

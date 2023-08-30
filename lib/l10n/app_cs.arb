@@ -1,0 +1,39 @@
+{
+    "loading": "Načítám...",
+    "yes": "Ano",
+    "no": "Ne",
+    "save": "Uložit",
+    "edit": "Upravit",
+    "delete": "Odstranit",
+
+    "login": "Přihlásit se",
+    "register": "Registrovat se",
+    "logout": "Odhlásit",
+    "goToLogin": "Přejít na přihlášení",
+    "goToRegistration": "Přejít na registraci",
+    
+    "email": "E-mail",
+    "password": "Heslo",
+
+    "yourTasks": "Vaše úkoly",
+    "taskDetail": "Detail úkolu",
+    "newTask": "Nový úkol",
+    "updateTask": "Upravit úkol",
+
+    "name": "Jméno",
+    "description": "Popis",
+    "done": "Hotovo",
+    "created": "Vytvořeno",
+    "due": "Termín",
+
+    "somethingWentWrong": "Něco se pokazilo",
+    "userNotFound": "Uživatel se zadanými údaji nebyl nalezen",
+    "invalidCredentials": "Neplatné údaje",
+    "emailTaken": "E-mail již někdo používá",
+    "weakPassword": "Heslo příliš slabé",
+    "noTasks": "Zatím nemáte žádné úkoly. Úkol vytvořte kliknutím na tlačítko \"+\"",
+    "noDateSelected": "Datum nezvoleno",
+    "nameCantBeEmpty": "Jméno nesmí zůstat prázdné",
+    "deleteTask": "Odstranit úkol",
+    "sureToDeleteTask": "Určitě si přejete odstranit tento úkol? Tuto akci nemůžete později vzít zpět."
+}

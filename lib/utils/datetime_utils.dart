@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:intl/intl.dart';  //for date format
+import 'package:intl/intl.dart';
 
 class DateTimeUtils {
   
