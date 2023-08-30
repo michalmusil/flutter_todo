@@ -8,7 +8,6 @@ import 'package:todo_list/state/auth/providers/auth_state_provider.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
 
 class Tasks extends ConsumerWidget {
-
   const Tasks({super.key});
 
   @override
