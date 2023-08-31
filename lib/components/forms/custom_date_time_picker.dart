@@ -2,54 +2,57 @@ import 'package:flutter/material.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
 import 'package:todo_list/utils/localization_utils.dart';
 
-class CustomDatePicker extends StatefulWidget {
+class CustomDateTimePicker extends StatefulWidget {
   final String label;
   final DateTime? initialDate;
-  final void Function(DateTime?) onDatePicked;
+  final void Function(DateTime?, TimeOfDay?) onDateTimePicked;
 
-  const CustomDatePicker({
+  const CustomDateTimePicker({
     super.key,
     required this.label,
     this.initialDate,
-    required this.onDatePicked,
+    required this.onDateTimePicked,
   });
 
   @override
-  State<CustomDatePicker> createState() => _CustomDatePickerState();
+  State<CustomDateTimePicker> createState() => _CustomDateTimePickerState();
 }
 
-class _CustomDatePickerState extends State<CustomDatePicker> {
-  DateTime? _selectedDate;
+class _CustomDateTimePickerState extends State<CustomDateTimePicker> {
+  DateTime? _selectedDateTime;
+  TimeOfDay? _selectedTime;
 
   @override
   void initState() {
     if (widget.initialDate != null) {
       setState(() {
-        _selectedDate = widget.initialDate;
+        _selectedDateTime = widget.initialDate;
       });
     }
     super.initState();
   }
 
   Future _pickDate(BuildContext context) async {
-    DateTime? picked = await showDatePicker(
+    final picked = await DateTimeUtils.showDateTimePicker(
       context: context,
-      initialDate: widget.initialDate ?? DateTime.now(),
-      firstDate: DateTime(1990),
-      lastDate: DateTime(2200),
+      initialDateTime: widget.initialDate ?? DateTime.now(),
+      firstDateTime: DateTime(1990),
+      lastDateTime: DateTime(2200),
     );
     if (picked != null) {
-      widget.onDatePicked(picked);
+      widget.onDateTimePicked(picked.$1, picked.$2);
       setState(() {
-        _selectedDate = picked;
+        _selectedDateTime = picked.$1;
+        _selectedTime = picked.$2;
       });
     }
   }
 
-  _removeDate() {
-    widget.onDatePicked(null);
+  _removeDateTime() {
+    widget.onDateTimePicked(null, null);
     setState(() {
-      _selectedDate = null;
+      _selectedDateTime = null;
+      _selectedTime = null;
     });
   }
 
@@ -112,25 +115,29 @@ class _CustomDatePickerState extends State<CustomDatePicker> {
                     const SizedBox(
                       height: 5,
                     ),
-                    if (_selectedDate != null)
+                    _selectedDateTime != null
+                        ? Text(
+                            DateTimeUtils.getDateString(_selectedDateTime!),
+                            style: Theme.of(context).textTheme.labelMedium,
+                          )
+                        : Text(
+                            strings(context).noDateSelected,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                    if(_selectedTime != null)
                       Text(
-                        DateTimeUtils.getDateString(_selectedDate!),
-                        style: Theme.of(context).textTheme.labelMedium,
-                      )
-                    else
-                      Text(
-                        strings(context).noDateSelected,
-                        style: Theme.of(context).textTheme.labelMedium,
-                      )
+                            DateTimeUtils.getTimeString(_selectedDateTime!),
+                            style: Theme.of(context).textTheme.labelMedium,
+                          )
                   ],
                 )
               ],
             ),
           ),
-          if (_selectedDate != null)
+          if (_selectedDateTime != null)
             IconButton(
                 onPressed: () {
-                  _removeDate();
+                  _removeDateTime();
                 },
                 icon: Icon(
                   Icons.close,

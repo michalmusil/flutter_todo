@@ -9,8 +9,16 @@ import 'package:todo_list/utils/localization_utils.dart';
 class TaskListItem extends StatefulWidget {
   final TaskModel task;
   final void Function() onClick;
+  final void Function(bool)? onDoneStateChanged;
+  final BorderRadius edgeRadius = BorderRadius.circular(8);
+  final EdgeInsets itemMargin = const EdgeInsets.symmetric(vertical: 5);
 
-  const TaskListItem({super.key, required this.task, required this.onClick});
+  TaskListItem({
+    super.key,
+    required this.task,
+    required this.onClick,
+    this.onDoneStateChanged,
+  });
 
   @override
   State<TaskListItem> createState() => _TaskListItemState();
@@ -26,16 +34,11 @@ class _TaskListItemState extends State<TaskListItem> {
   }
 
   @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
-  }
-
-  @override
   void didUpdateWidget(covariant TaskListItem oldWidget) {
     _isChecked = widget.task.done;
     super.didUpdateWidget(oldWidget);
   }
-  
+
   _onCompletedChanged({
     required bool newValue,
     required TasksRepositoryBase repository,
@@ -45,6 +48,9 @@ class _TaskListItemState extends State<TaskListItem> {
     setState(() {
       _isChecked = newValue;
     });
+    if (widget.onDoneStateChanged != null) {
+      widget.onDoneStateChanged!(newValue);
+    }
   }
 
   _deleteTask({
@@ -55,19 +61,47 @@ class _TaskListItemState extends State<TaskListItem> {
   }
 
   Widget _deleteBackground(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerRight,
-      color: Theme.of(context).colorScheme.error,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Text(
-          strings(context).delete,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: Theme.of(context).colorScheme.onError,
+    return Padding(
+      padding: widget.itemMargin,
+      child: Container(
+        alignment: Alignment.centerRight,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.error,
+          borderRadius: widget.edgeRadius,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Text(
+            strings(context).delete,
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.onError,
+            ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _doneCheckbox({
+    required BuildContext context,
+    required WidgetRef ref,
+  }) {
+    return Checkbox(
+      value: _isChecked,
+      onChanged: (value) {
+        final valueToSet = value ?? _isChecked;
+        _onCompletedChanged(
+          newValue: valueToSet,
+          repository: ref.read(tasksRepositoryProvider),
+        );
+      },
+      activeColor: Theme.of(context).colorScheme.primary,
+      checkColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const CircleBorder(),
+      side: BorderSide(
+        color: Theme.of(context).colorScheme.onSurface,
       ),
     );
   }
@@ -76,8 +110,6 @@ class _TaskListItemState extends State<TaskListItem> {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final tasksRepository = ref.watch(tasksRepositoryProvider);
-
         return Dismissible(
           key: Key(widget.task.id),
           direction: DismissDirection.endToStart,
@@ -86,16 +118,16 @@ class _TaskListItemState extends State<TaskListItem> {
           onDismissed: (direction) {
             _deleteTask(
               context: context,
-              repository: tasksRepository,
+              repository: ref.read(tasksRepositoryProvider),
             );
           },
           child: GestureDetector(
             onTap: widget.onClick,
             child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 5.0),
+              margin: widget.itemMargin,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: widget.edgeRadius,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -103,21 +135,9 @@ class _TaskListItemState extends State<TaskListItem> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Checkbox(
-                      value: _isChecked,
-                      onChanged: (value) {
-                        final valueToSet = value ?? _isChecked;
-                        _onCompletedChanged(
-                          newValue: valueToSet,
-                          repository: tasksRepository,
-                        );
-                      },
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      checkColor: Theme.of(context).colorScheme.onPrimary,
-                      shape: const CircleBorder(),
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+                    _doneCheckbox(
+                      context: context,
+                      ref: ref,
                     ),
                     const SizedBox(
                       width: 8,

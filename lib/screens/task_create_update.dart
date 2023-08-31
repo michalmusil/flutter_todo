@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/components/forms/custom_date_picker.dart';
+import 'package:todo_list/components/forms/custom_date_time_picker.dart';
 import 'package:todo_list/components/forms/custom_switch.dart';
 import 'package:todo_list/components/forms/custom_text_input.dart';
 import 'package:todo_list/components/misc/rounded_push_button.dart';
@@ -190,10 +190,10 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
                 },
                 label: strings(context).done,
               ),
-              CustomDatePicker(
+              CustomDateTimePicker(
                 label: strings(context).due,
                 initialDate: _due,
-                onDatePicked: (newDate) {
+                onDateTimePicked: (newDate, _) {
                   setState(() {
                     _due = newDate;
                   });
