@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/state/auth/providers/user_provider.dart';
-import 'package:todo_list/state/tasks/models/task_model.dart';
+import 'package:todo_list/domain/models/task/task_model.dart';
 
 import 'tasks_repository_provider.dart';
 

@@ -1,9 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/state/auth/bl/auth_service.dart';
-import 'package:todo_list/state/auth/bl/auth_service_base.dart';
-import 'package:todo_list/state/auth/models/auth_state.dart';
-
-import '../models/auth_exception.dart';
+import 'package:todo_list/data/services/auth_service.dart';
+import 'package:todo_list/domain/models/auth/auth_exception.dart';
+import 'package:todo_list/domain/models/auth/auth_state.dart';
+import 'package:todo_list/domain/services/auth_service_base.dart';
 
 class AuthStateNotifier extends StateNotifier<AuthState?> {
   final AuthServiceBase authService = const AuthService();

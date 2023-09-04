@@ -40,6 +40,11 @@ dependencies:
   # Riverpod
   hooks_riverpod: ^2.3.10
   flutter_hooks: ^0.20.1
+  
+  # Bloc
+  bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
+
   # Other
   flutter_svg: ^2.0.7
   flutter_localizations:

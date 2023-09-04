@@ -2,11 +2,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/components/overlay/loading_overlay.dart';
-import 'package:todo_list/navigation/nav_router.dart';
-import 'package:todo_list/screens/splash.dart';
+import 'package:todo_list/presentation/components/overlay/loading_overlay.dart';
+import 'package:todo_list/config/navigation/nav_router.dart';
+import 'package:todo_list/presentation/screens/splash.dart';
 import 'package:todo_list/state/global/providers/app_loading_provider.dart';
-import 'package:todo_list/themes.dart';
+import 'package:todo_list/config/themes.dart';
 import 'firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

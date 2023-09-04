@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/state/tasks/models/task_model.dart';
-import 'package:todo_list/state/tasks/repositories/tasks_repository_base.dart';
+import 'package:todo_list/domain/models/task/task_model.dart';
+import 'package:todo_list/domain/repositories/tasks_repository_base.dart';
 
 typedef TaskRepoState = bool;
 
