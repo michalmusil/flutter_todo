@@ -4,7 +4,12 @@ import 'package:todo_list/domain/models/task/task_model.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
 
 class TasksRepository implements TasksRepositoryBase {
-  final _tasksCollection = FirebaseFirestore.instance.collection('tasks');
+  final FirebaseFirestore _firestoreInstance;
+
+  CollectionReference<Map<String, dynamic>> get _tasksCollection =>
+      _firestoreInstance.collection('tasks');
+
+  TasksRepository(this._firestoreInstance);
 
   @override
   Stream<Iterable<TaskModel>> tasksStream({

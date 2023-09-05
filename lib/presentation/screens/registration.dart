@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:todo_list/data/services/auth_service.dart';
+import 'package:todo_list/domain/services/auth_service_base.dart';
+import 'package:todo_list/locator.dart';
 import 'package:todo_list/presentation/bloc/authentication/authentication_cubit.dart';
 import 'package:todo_list/presentation/components/decorative/registration_banner.dart';
 import 'package:todo_list/presentation/components/forms/custom_text_input.dart';
@@ -15,46 +16,35 @@ class Registration extends StatelessWidget {
 
   Registration({super.key});
 
-  void _toggleLoading({
-    required bool show,
-    required BuildContext context,
-  }) {
-    if (show) {
-      LoadingOverlay.instance().show(context);
-    } else {
-      LoadingOverlay.instance().hide();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthenticationCubit(
-        authService: const AuthService(),
+        authService: locator<AuthServiceBase>(),
       ),
       child: BlocListener<AuthenticationCubit, AuthenticationState>(
         listener: (context, state) {
           switch (state) {
             case AuthenticationLoading():
               {
-                _toggleLoading(show: true, context: context);
+                LoadingOverlay.instance().show(context);
                 break;
               }
             case AuthenticationFailure(getMessage: _):
               {
                 _password.text = "";
-                _toggleLoading(show: false, context: context);
+                LoadingOverlay.instance().hide();
                 break;
               }
             case AuthenticationSuccess(user: _):
               {
-                _toggleLoading(show: false, context: context);
+                LoadingOverlay.instance().hide();
                 NavRouter.instance().toTasks(context);
                 break;
               }
             default:
               {
-                _toggleLoading(show: false, context: context);
+                LoadingOverlay.instance().hide();
                 break;
               }
           }

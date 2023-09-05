@@ -9,12 +9,15 @@ import 'package:todo_list/state/global/providers/app_loading_provider.dart';
 import 'package:todo_list/config/themes.dart';
 import 'firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'locator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await initDependencies();
 
   runApp(
     const ProviderScope(

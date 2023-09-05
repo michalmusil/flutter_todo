@@ -11,7 +11,9 @@ class LoadingOverlay {
   LoadingOverlay._();
   static final _instance = LoadingOverlay._();
   factory LoadingOverlay.instance() => _instance;
-
+  
+  /// Shows the loading overlay over the proveded context's screen.
+  /// Only one loading overlay can be displayed at a given time.
   void show(BuildContext context) {
     if (!isShown) {
       final overlay = Overlay.of(context);
@@ -26,6 +28,7 @@ class LoadingOverlay {
     }
   }
 
+  /// Hides the loading overlay if present.
   void hide() {
     _controller?.close();
     _controller = null;

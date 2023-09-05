@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/data/services/auth_service.dart';
 import 'package:todo_list/domain/models/auth/auth_exception.dart';
@@ -5,7 +6,7 @@ import 'package:todo_list/domain/models/auth/auth_state.dart';
 import 'package:todo_list/domain/services/auth_service_base.dart';
 
 class AuthStateNotifier extends StateNotifier<AuthState?> {
-  final AuthServiceBase authService = const AuthService();
+  final AuthServiceBase authService = AuthService(FirebaseAuth.instance);
 
   AuthStateNotifier() : super(null) {
     _checkLastLoggedInUser();
