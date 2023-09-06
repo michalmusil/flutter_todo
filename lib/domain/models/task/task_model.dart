@@ -53,46 +53,16 @@ class TaskModel {
 
   TaskModel copyWith({
     String? name,
-    String? description,
     bool? done,
-    DateTime? due,
   }) {
     return TaskModel(
       id: id,
       userId: userId,
       created: created,
       name: name ?? this.name,
-      description: description ?? this.description,
+      description: description,
       done: done ?? this.done,
-      due: due ?? this.due,
+      due: due,
     );
   }
-
-  static final List<TaskModel> mockData = [
-    TaskModel(
-      id: "asdfasdfasdf",
-      userId: "1",
-      name:
-          "Wash the dishes and then bust my shit, stroke my shit, put lotion on my dick, horny as fuuck maan!",
-      created: DateTime.fromMillisecondsSinceEpoch(1640958000000),
-      description: "I'm gonna wash the dished today",
-      due: DateTime.now(),
-    ),
-    TaskModel(
-      id: "a14sd65fr",
-      userId: "1",
-      name: "Take the dog for a walk",
-      created: DateTime.fromMillisecondsSinceEpoch(1640978000150),
-      description: null,
-      due: DateTime.fromMillisecondsSinceEpoch(1641008011150),
-    ),
-    TaskModel(
-      id: "rguhaqrpiuegfhbnl",
-      userId: "1",
-      name: "Clean the carpets",
-      created: DateTime.now(),
-      description:
-          "With a very strong chemical solution that will lorem ipsum.",
-    ),
-  ];
 }

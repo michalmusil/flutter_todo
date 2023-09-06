@@ -22,7 +22,7 @@ class NavRouter {
       Routes.taskDetail.route: (context) =>
           TaskDetail(task: arguments as TaskModel),
       Routes.taskCreateOrUpdate.route: (context) =>
-          TaskCreateUpdate(task: arguments as TaskModel?),
+          TaskCreateUpdate(existingTask: arguments as TaskModel?),
     };
     final currentBuilder = routes[settings.name]!;
     return MaterialPageRoute(builder: (ctx) => currentBuilder(ctx));
