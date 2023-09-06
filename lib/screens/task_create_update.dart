@@ -77,10 +77,11 @@ class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
 
       final newValues = _existingTask!.copyWith(
         name: _name.text,
-        description: _description.text,
         done: _done,
-        due: _due,
       );
+
+      newValues.description = _description.text;
+      newValues.due = _due;
 
       await repositoryNotifier.updateTask(task: newValues).then(
         (_) {
