@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_list/domain/repositories/tasks_repository_base.dart';
 import 'package:todo_list/domain/services/auth_service_base.dart';
 import 'package:todo_list/locator.dart';
@@ -10,9 +9,6 @@ import 'package:todo_list/presentation/components/forms/custom_switch.dart';
 import 'package:todo_list/presentation/components/forms/custom_text_input.dart';
 import 'package:todo_list/presentation/components/misc/rounded_push_button.dart';
 import 'package:todo_list/presentation/components/overlay/loading_overlay.dart';
-import 'package:todo_list/state/auth/providers/user_provider.dart';
-import 'package:todo_list/state/tasks/notifiers/task_repo_notifier.dart';
-import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
 import 'package:todo_list/utils/localization_utils.dart';
 
 import '../components/popups/confirmation_popup.dart';
@@ -21,21 +17,9 @@ import '../../config/navigation/nav_router.dart';
 
 class TaskCreateUpdate extends StatefulWidget {
   late final TaskModel? _existingTask;
-  final TextEditingController _name = TextEditingController();
-  final TextEditingController _description = TextEditingController();
-  bool _done = false;
-  DateTime? _due;
-
-  String? _nameError;
 
   TaskCreateUpdate({super.key, TaskModel? existingTask}) {
     _existingTask = existingTask;
-    if (existingTask != null) {
-      _name.text = existingTask.name;
-      _description.text = existingTask.description ?? '';
-      _done = existingTask.done;
-      _due = existingTask.due;
-    }
   }
 
   @override
@@ -43,8 +27,6 @@ class TaskCreateUpdate extends StatefulWidget {
 }
 
 class _TaskCreateUpdateState extends State<TaskCreateUpdate> {
-  late final bool _isUpdating;
-
   final TextEditingController _name = TextEditingController();
   final TextEditingController _description = TextEditingController();
   bool _done = false;

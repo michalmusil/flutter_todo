@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_list/domain/repositories/tasks_repository_base.dart';
+import 'package:todo_list/locator.dart';
 import 'package:todo_list/presentation/components/content/item_detail.dart';
 import 'package:todo_list/presentation/components/misc/rounded_push_button.dart';
+import 'package:todo_list/presentation/components/overlay/loading_overlay.dart';
 import 'package:todo_list/presentation/components/popups/confirmation_popup.dart';
-import 'package:todo_list/state/tasks/providers/task_repo_state_provider.dart';
 import 'package:todo_list/config/navigation/nav_router.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
 import 'package:todo_list/utils/localization_utils.dart';
 
 import '../../domain/models/task/task_model.dart';
 
-class TaskDetail extends ConsumerWidget {
+class TaskDetail extends StatelessWidget {
   final TaskModel task;
 
   const TaskDetail({
@@ -43,7 +44,7 @@ class TaskDetail extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -60,36 +61,29 @@ class TaskDetail extends ConsumerWidget {
           },
         ),
         actions: [
-          Consumer(
-            builder: (context, ref, child) {
-              return IconButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (_) => ConfirmationPopup(
-                      title: strings(context).deleteTask,
-                      message:
-                          strings(context).sureToDeleteTask,
-                      onConfirm: () async {
-                        final taskRepoStateNotifier = ref.read(taskRepoStateProvider.notifier);
-                        await taskRepoStateNotifier
-                            .deleteTask(
-                              task: task,
-                            )
-                            .then((_) {
-                              NavRouter.instance().returnBack(context);
-                            });
-                      },
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.delete_rounded,
-                  color: Theme.of(context).colorScheme.onBackground,
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => ConfirmationPopup(
+                  title: strings(context).deleteTask,
+                  message: strings(context).sureToDeleteTask,
+                  onConfirm: () async {
+                    LoadingOverlay.instance().show(context);
+                    final tasksRepository = locator<TasksRepositoryBase>();
+                    await tasksRepository.deleteTask(task).then((_) {
+                      LoadingOverlay.instance().hide(); 
+                      NavRouter.instance().returnBack(context);
+                    });
+                  },
                 ),
               );
             },
-          )
+            icon: Icon(
+              Icons.delete_rounded,
+              color: Theme.of(context).colorScheme.onBackground,
+            ),
+          ),
         ],
       ),
       body: SingleChildScrollView(

@@ -1,11 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/presentation/components/overlay/loading_overlay.dart';
 import 'package:todo_list/config/navigation/nav_router.dart';
 import 'package:todo_list/presentation/screens/splash.dart';
-import 'package:todo_list/state/global/providers/app_loading_provider.dart';
 import 'package:todo_list/config/themes.dart';
 import 'firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -20,9 +17,7 @@ void main() async {
   await initDependencies();
 
   runApp(
-    const ProviderScope(
-      child: TodoApplication(),
-    ),
+    const TodoApplication(),
   );
 }
 
@@ -49,46 +44,48 @@ class TodoApplication extends StatelessWidget {
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       onGenerateRoute: NavRouter.onGenerateRoute,
-      home: const Splash(),
+      home: Splash(),
       builder: (builderContext, child) {
-
         SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness:
               Theme.of(builderContext).brightness == Brightness.light
                   ? Brightness.dark
                   : Brightness.light,
-          statusBarBrightness: Theme.of(builderContext).brightness == Brightness.light
-              ? Brightness.dark
-              : Brightness.light,
+          statusBarBrightness:
+              Theme.of(builderContext).brightness == Brightness.light
+                  ? Brightness.dark
+                  : Brightness.light,
         ));
 
         // Need to return an overlay widget to be able to globally display the loading overlay
         // Child is returned in the overlay entry builder
-        return Overlay(
-          initialEntries: [
-            OverlayEntry(
-              builder: (context) {
-                return Consumer(
-                  builder: (ctx, ref, _) {
-                    ref.listen(
-                      appLoadingProvider,
-                      (previous, next) {
-                        if (next) {
-                          LoadingOverlay.instance().show(context);
-                        } else {
-                          LoadingOverlay.instance().hide();
-                        }
-                      },
-                    );
+        // return Overlay(
+        //   initialEntries: [
+        //     OverlayEntry(
+        //       builder: (context) {
+        //         return Consumer(
+        //           builder: (ctx, ref, _) {
+        //             ref.listen(
+        //               appLoadingProvider,
+        //               (previous, next) {
+        //                 if (next) {
+        //                   LoadingOverlay.instance().show(context);
+        //                 } else {
+        //                   LoadingOverlay.instance().hide();
+        //                 }
+        //               },
+        //             );
 
-                    return child ?? Container();
-                  },
-                );
-              },
-            ),
-          ],
-        );
+        //             return child ?? Container();
+        //           },
+        //         );
+        //       },
+        //     ),
+        //   ],
+        // );
+
+        return child ?? Container();
       },
     );
   }

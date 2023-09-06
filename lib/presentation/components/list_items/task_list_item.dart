@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_list/state/tasks/providers/tasks_repository_provider.dart';
+import 'package:todo_list/locator.dart';
 import 'package:todo_list/domain/repositories/tasks_repository_base.dart';
 import 'package:todo_list/domain/models/task/task_model.dart';
 import 'package:todo_list/utils/datetime_utils.dart';
@@ -25,6 +24,7 @@ class TaskListItem extends StatefulWidget {
 }
 
 class _TaskListItemState extends State<TaskListItem> {
+  final TasksRepositoryBase _repository = locator<TasksRepositoryBase>();
   late bool _isChecked;
 
   @override
@@ -41,10 +41,9 @@ class _TaskListItemState extends State<TaskListItem> {
 
   _onCompletedChanged({
     required bool newValue,
-    required TasksRepositoryBase repository,
   }) {
     widget.task.done = newValue;
-    repository.updateTask(widget.task);
+    _repository.updateTask(widget.task);
     setState(() {
       _isChecked = newValue;
     });
@@ -55,9 +54,8 @@ class _TaskListItemState extends State<TaskListItem> {
 
   _deleteTask({
     required BuildContext context,
-    required TasksRepositoryBase repository,
   }) async {
-    await repository.deleteTask(widget.task);
+    await _repository.deleteTask(widget.task);
   }
 
   Widget _deleteBackground(BuildContext context) {
@@ -86,7 +84,6 @@ class _TaskListItemState extends State<TaskListItem> {
 
   Widget _doneCheckbox({
     required BuildContext context,
-    required WidgetRef ref,
   }) {
     return Checkbox(
       value: _isChecked,
@@ -94,7 +91,6 @@ class _TaskListItemState extends State<TaskListItem> {
         final valueToSet = value ?? _isChecked;
         _onCompletedChanged(
           newValue: valueToSet,
-          repository: ref.read(tasksRepositoryProvider),
         );
       },
       activeColor: Theme.of(context).colorScheme.primary,
@@ -108,71 +104,65 @@ class _TaskListItemState extends State<TaskListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer(
-      builder: (context, ref, child) {
-        return Dismissible(
-          key: Key(widget.task.id),
-          direction: DismissDirection.endToStart,
-          background: _deleteBackground(context),
-          secondaryBackground: _deleteBackground(context),
-          onDismissed: (direction) {
-            _deleteTask(
-              context: context,
-              repository: ref.read(tasksRepositoryProvider),
-            );
-          },
-          child: GestureDetector(
-            onTap: widget.onClick,
-            child: Container(
-              margin: widget.itemMargin,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: widget.edgeRadius,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    _doneCheckbox(
-                      context: context,
-                      ref: ref,
-                    ),
-                    const SizedBox(
-                      width: 8,
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.task.name,
-                            style: Theme.of(context).textTheme.titleMedium,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          if (widget.task.due != null)
-                            const SizedBox(
-                              height: 5,
-                            ),
-                          if (widget.task.due != null)
-                            Text(
-                              DateTimeUtils.getDateString(widget.task.due!),
-                              style: Theme.of(context).textTheme.labelMedium,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+    return Dismissible(
+      key: Key(widget.task.id),
+      direction: DismissDirection.endToStart,
+      background: _deleteBackground(context),
+      secondaryBackground: _deleteBackground(context),
+      onDismissed: (direction) {
+        _deleteTask(
+          context: context,
         );
       },
+      child: GestureDetector(
+        onTap: widget.onClick,
+        child: Container(
+          margin: widget.itemMargin,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: widget.edgeRadius,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _doneCheckbox(
+                  context: context,
+                ),
+                const SizedBox(
+                  width: 8,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.task.name,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (widget.task.due != null)
+                        const SizedBox(
+                          height: 5,
+                        ),
+                      if (widget.task.due != null)
+                        Text(
+                          DateTimeUtils.getDateString(widget.task.due!),
+                          style: Theme.of(context).textTheme.labelMedium,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
